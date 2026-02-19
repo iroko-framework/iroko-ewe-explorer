@@ -111,3 +111,16 @@ footer {
 
 .lang-panel { display: none; }
 .lang-panel.active { display: block; }
+
+.logo-block a {
+  display: inline-block;
+}
+
+.logo-block img {
+  display: block;
+  transition: transform 0.15s ease;
+}
+
+.logo-block a:hover img {
+  transform: scale(1.03);
+}
