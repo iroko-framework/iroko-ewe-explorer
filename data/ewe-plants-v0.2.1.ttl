@@ -47,5 +47,5 @@ iroko:Specimen33214371
     a dwc:Occurrence ;
     dwc:occurrenceID "33214371" ;
     dwc:institutionCode "SERNEC" ;
-    dwc:scientificName "Fictitia africana" ;
+    dwc:scientificName "Fictitia grande africana" ;
     dcterms:relation <https://sernecportal.org/portal/collections/individual/index.php?occid=33214371&clid=0> .
