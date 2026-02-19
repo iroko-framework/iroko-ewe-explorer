@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Plants | Iroko Ewé Knowledge Explorer</title>
-
-  <!-- Use root-relative path for GitHub Project Pages -->
   <link rel="stylesheet" href="/iroko-ewe-explorer/assets/style.css">
 </head>
 
@@ -23,26 +21,30 @@
       <p class="subtitle">Linked Data for Ethically Governed Ethnobotanical Knowledge</p>
       <div class="version-pill">Version 0.2.1 | February 2026</div>
 
-      <!-- Keep buttons if you want consistent header, but they will be inactive until we add panels/scripts -->
-      <div class="lang-buttons">
-        <button type="button" disabled>English</button>
-        <button type="button" disabled>Español</button>
-        <button type="button" disabled>Français</button>
-        <button type="button" disabled>Português</button>
-        <button type="button" disabled>Èdè Yorùbá</button>
+      <div class="lang-buttons" aria-label="Language selector">
+        <button type="button" onclick="setLang('en')" id="btn-en">English</button>
+        <button type="button" onclick="setLang('es')" id="btn-es">Español</button>
+        <button type="button" onclick="setLang('pt')" id="btn-pt">Português</button>
+        <button type="button" onclick="setLang('fr')" id="btn-fr">Français</button>
+        <button type="button" onclick="setLang('yo')" id="btn-yo">Èdè Yorùbá</button>
       </div>
-    </div>
 
+    </div>
   </div>
 </header>
 
-<section>
+<nav class="top-nav">
+  <a href="/iroko-ewe-explorer/index.html">Home</a>
+  <a href="/iroko-ewe-explorer/concept/index.html">Controlled Vocabularies</a>
+</nav>
+
+<!-- EN -->
+<section id="panel-en" class="lang-panel active">
   <h2>Plant Records</h2>
 
   <p>Plant records will appear here once the dataset is generated.</p>
 
   <p>Each plant page will display:</p>
-
   <ul>
     <li>Primary Yorùbá label</li>
     <li>Scientific name</li>
@@ -56,9 +58,115 @@
   <p><em>No records published yet.</em></p>
 </section>
 
+<!-- ES -->
+<section id="panel-es" class="lang-panel">
+  <h2>Registros de plantas</h2>
+
+  <p>Los registros de plantas aparecerán aquí una vez que se genere el conjunto de datos.</p>
+
+  <p>Cada página de planta mostrará:</p>
+  <ul>
+    <li>Etiqueta principal en yorùbá</li>
+    <li>Nombre científico</li>
+    <li>Nombres alternativos multilingües</li>
+    <li>Clasificación del nivel de acceso</li>
+    <li>Categorías medicinales</li>
+    <li>Categorías rituales</li>
+    <li>Referencias de procedencia</li>
+  </ul>
+
+  <p><em>Aún no hay registros publicados.</em></p>
+</section>
+
+<!-- PT -->
+<section id="panel-pt" class="lang-panel">
+  <h2>Registros de plantas</h2>
+
+  <p>Os registros de plantas aparecerão aqui quando o conjunto de dados for gerado.</p>
+
+  <p>Cada página de planta exibirá:</p>
+  <ul>
+    <li>Rótulo principal em yorùbá</li>
+    <li>Nome científico</li>
+    <li>Nomes alternativos multilíngues</li>
+    <li>Classificação do nível de acesso</li>
+    <li>Categorias medicinais</li>
+    <li>Categorias rituais</li>
+    <li>Referências de proveniência</li>
+  </ul>
+
+  <p><em>Ainda não há registros publicados.</em></p>
+</section>
+
+<!-- FR -->
+<section id="panel-fr" class="lang-panel">
+  <h2>Notices de plantes</h2>
+
+  <p>Les notices de plantes apparaîtront ici une fois le jeu de données généré.</p>
+
+  <p>Chaque page de plante affichera :</p>
+  <ul>
+    <li>Libellé principal en yorùbá</li>
+    <li>Nom scientifique</li>
+    <li>Noms alternatifs multilingues</li>
+    <li>Classification du niveau d’accès</li>
+    <li>Catégories médicinales</li>
+    <li>Catégories rituelles</li>
+    <li>Références de provenance</li>
+  </ul>
+
+  <p><em>Aucune notice publiée pour le moment.</em></p>
+</section>
+
+<!-- YO -->
+<section id="panel-yo" class="lang-panel">
+  <h2>Àwọn àkọsílẹ̀ ọgbìn</h2>
+
+  <p>Àwọn àkọsílẹ̀ ọgbìn yóò hàn níbí nígbà tí dataset bá ti dá sílẹ̀.</p>
+
+  <p>Ojú-ewé ọgbìn kọọkan yóò fi hàn:</p>
+  <ul>
+    <li>Orúkọ Yorùbá gẹ́gẹ́ bí “primary label”</li>
+    <li>Orúkọ sáyẹ́ǹsì</li>
+    <li>Àwọn orúkọ míì ní ọ̀pọ̀ èdè</li>
+    <li>Ìpele àyèwọ̀lé</li>
+    <li>Àwọn ẹ̀ka ìwòsàn</li>
+    <li>Àwọn ẹ̀ka ìṣe-ẹ̀mí</li>
+    <li>Àwọn ìtọ́kasí orísun</li>
+  </ul>
+
+  <p><em>Kò tíì sí àkọsílẹ̀ tí a tẹ̀ jáde.</em></p>
+</section>
+
 <footer class="footer">
   <a href="/iroko-ewe-explorer/index.html">← Back to Home</a>
 </footer>
+
+<script>
+  function setLang(lang) {
+    const panels = document.querySelectorAll(".lang-panel");
+    const buttons = document.querySelectorAll(".lang-buttons button");
+
+    panels.forEach(p => p.classList.remove("active"));
+    buttons.forEach(b => b.classList.remove("active"));
+
+    const panel = document.getElementById("panel-" + lang);
+    const btn = document.getElementById("btn-" + lang);
+
+    if (panel) panel.classList.add("active");
+    if (btn) btn.classList.add("active");
+
+    document.documentElement.lang = lang;
+
+    try { localStorage.setItem("iroko_lang", lang); } catch(e) {}
+  }
+
+  (function init() {
+    let saved = "en";
+    try { saved = localStorage.getItem("iroko_lang") || "en"; } catch(e) {}
+    setLang(saved);
+  })();
+</script>
 
 </body>
 </html>
