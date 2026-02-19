@@ -127,4 +127,112 @@
 <section id="panel-en" class="lang-panel active">
   <h2>About This Explorer</h2>
   <p>
-    The Iroko Ewé Knowledge Exp
+    The Iroko Ewé Knowledge Explorer provides a public interface
+    for navigating plant records structured using the Iroko Framework.
+  </p>
+  <p>
+    This environment demonstrates a Sacred Metadata approach:
+    botanical and linguistic knowledge is discoverable while spiritually
+    sensitive knowledge remains governed through explicit access tiers.
+  </p>
+  <p>
+    The dataset follows the CARE Principles for Indigenous Data Governance:
+    <strong>Collective Benefit, Authority to Control, Responsibility, and Ethics.</strong>
+  </p>
+</section>
+
+<!-- SPANISH -->
+<section id="panel-es" class="lang-panel">
+  <h2>Acerca de este Explorador</h2>
+  <p>
+    El Explorador Iroko Ewé ofrece una interfaz pública para navegar
+    registros botánicos estructurados mediante el Iroko Framework.
+  </p>
+  <p>
+    Este entorno demuestra un enfoque de Metadatos Sagrados,
+    manteniendo niveles explícitos de acceso.
+  </p>
+  <p>
+    El conjunto de datos sigue los principios CARE.
+  </p>
+</section>
+
+<!-- FRENCH -->
+<section id="panel-fr" class="lang-panel">
+  <h2>À propos de cet Explorateur</h2>
+  <p>
+    L’Explorateur Iroko Ewé fournit une interface publique
+    pour naviguer les notices botaniques structurées.
+  </p>
+  <p>
+    Il démontre une approche de Métadonnées Sacrées
+    avec des niveaux d’accès explicites.
+  </p>
+  <p>
+    Le jeu de données suit les principes CARE.
+  </p>
+</section>
+
+<!-- PORTUGUESE -->
+<section id="panel-pt" class="lang-panel">
+  <h2>Sobre este Explorador</h2>
+  <p>
+    O Explorador Iroko Ewé fornece uma interface pública
+    para navegar registros botânicos estruturados.
+  </p>
+  <p>
+    Demonstra uma abordagem de Metadados Sagrados
+    com níveis explícitos de acesso.
+  </p>
+  <p>
+    O conjunto de dados segue os Princípios CARE.
+  </p>
+</section>
+
+<!-- YORUBA -->
+<section id="panel-yo" class="lang-panel">
+  <h2>Nípa Explorer yìí</h2>
+  <p>
+    Iroko Ewé Knowledge Explorer ń jẹ́ ká lè ṣàwárí
+    àkọsílẹ̀ ọgbìn tí a ṣètò pẹ̀lú Iroko Framework.
+  </p>
+  <p>
+    Ó fi hàn ìlànà Sacred Metadata
+    pẹ̀lú ìpele àyèwọ̀lé tí a ṣètò dáadáa.
+  </p>
+  <p>
+    Dataset náà tẹ̀lé Ilana CARE.
+  </p>
+</section>
+
+<footer>
+  <p>
+    Iroko Ewé Knowledge Explorer<br>
+    Developed under the Iroko Historical Society<br>
+    Founded in New Orleans
+  </p>
+</footer>
+
+<script>
+function setLang(lang) {
+  const panels = document.querySelectorAll('.lang-panel');
+  const buttons = document.querySelectorAll('.lang-buttons button');
+
+  panels.forEach(p => p.classList.remove('active'));
+  buttons.forEach(b => b.classList.remove('active'));
+
+  document.getElementById('panel-' + lang).classList.add('active');
+  document.getElementById('btn-' + lang).classList.add('active');
+
+  document.documentElement.lang = lang;
+  localStorage.setItem("iroko_lang", lang);
+}
+
+(function() {
+  const saved = localStorage.getItem("iroko_lang") || "en";
+  setLang(saved);
+})();
+</script>
+
+</body>
+</html>
