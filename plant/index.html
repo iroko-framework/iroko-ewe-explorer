@@ -21,6 +21,7 @@
       font-weight: 600;
     }
   </style>
+  <script src="https://unpkg.com/n3@1.20.0/browser/n3.min.js"></script>
 </head>
 
 <body>
@@ -85,7 +86,9 @@
     modeled using Darwin Core occurrence standards.
   </p>
 
-  <p><em>No plant records have been published yet.</em></p>
+  <h3>Preview (from data/plants.ttl)</h3>
+  <p class="muted">Loading plant list…</p>
+  <div id="plant-list-en"></div>
 </section>
 
 <!-- ES -->
@@ -245,6 +248,83 @@
     try { saved = localStorage.getItem("iroko_lang") || "en"; } catch(e) {}
     setLang(saved);
   })();
+</script>
+<script>
+  async function loadPlantsTTL() {
+    const statusEl = document.querySelector("#panel-en .muted");
+    const listEl = document.getElementById("plant-list-en");
+
+    try {
+      // From /plant/index.html to /data/plants.ttl
+      const res = await fetch("../data/plants.ttl");
+      if (!res.ok) throw new Error("Could not load ../data/plants.ttl (HTTP " + res.status + ")");
+
+      const ttlText = await res.text();
+
+      // Parse Turtle
+      const parser = new N3.Parser();
+      const quads = parser.parse(ttlText);
+
+      const SCI = "http://rs.tdwg.org/dwc/terms/scientificName";
+      const ALT = "http://www.w3.org/2004/02/skos/core#altLabel";
+
+      const bySubject = new Map();
+
+      for (const q of quads) {
+        const s = q.subject.value;
+        const p = q.predicate.value;
+        const o = q.object;
+
+        if (!bySubject.has(s)) bySubject.set(s, { uri: s, sci: null, yo: [] });
+
+        const rec = bySubject.get(s);
+
+        if (p === SCI && o.termType === "Literal") rec.sci = o.value;
+
+        if (p === ALT && o.termType === "Literal") {
+          const lang = (o.language || "").toLowerCase();
+          if (lang === "yo") rec.yo.push(o.value);
+        }
+      }
+
+      const plants = Array.from(bySubject.values())
+        .filter(p => p.sci) // treat anything with scientificName as a plant node
+        .sort((a,b) => a.sci.localeCompare(b.sci));
+
+      if (statusEl) statusEl.textContent = "Loaded " + plants.length + " plant record(s) from plants.ttl.";
+
+      listEl.innerHTML = "";
+
+      if (!plants.length) {
+        listEl.innerHTML = "<p><em>No plant records found in plants.ttl.</em></p>";
+        return;
+      }
+
+      for (const p of plants) {
+        const yo = p.yo.length ? p.yo.join("; ") : "—";
+
+        const card = document.createElement("div");
+        card.style.border = "1px solid rgba(48,64,32,0.18)";
+        card.style.borderRadius = "12px";
+        card.style.padding = "12px 14px";
+        card.style.margin = "12px 0";
+        card.innerHTML = `
+          <div style="font-weight:700;">${p.sci}</div>
+          <div style="opacity:.85;"><strong>Yorùbá:</strong> ${yo}</div>
+          <div style="opacity:.7; font-size:.9rem; margin-top:6px;">${p.uri}</div>
+        `;
+        listEl.appendChild(card);
+      }
+
+    } catch (err) {
+      if (statusEl) statusEl.textContent = "Error loading plant data.";
+      if (listEl) listEl.innerHTML = "<p><em>" + err.message + "</em></p>";
+      console.error(err);
+    }
+  }
+
+  // Run after DOM is ready
+  window.addEventListener("DOMContentLoaded", loadPlantsTTL);
 </script>
 
 </body>
