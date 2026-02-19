@@ -86,7 +86,7 @@
     modeled using Darwin Core occurrence standards.
   </p>
 
-  <h3>Preview (from data/plants.ttl)</h3>
+  <h3>Preview (from data/ewe-plants-v0.2.1.ttl)</h3>
   <p class="muted">Loading plant list…</p>
   <div id="plant-list-en"></div>
 </section>
@@ -249,24 +249,32 @@
     setLang(saved);
   })();
 </script>
+  
 <script>
   async function loadPlantsTTL() {
     const statusEl = document.querySelector("#panel-en .muted");
     const listEl = document.getElementById("plant-list-en");
 
+    // ✅ parse v0.2.1 dataset
+    const TTL_URL = "../data/ewe-plants-v0.2.1.ttl";
+
     try {
-      // From /plant/index.html to /data/plants.ttl
-      const res = await fetch("../data/plants.ttl");
-      if (!res.ok) throw new Error("Could not load ../data/plants.ttl (HTTP " + res.status + ")");
+      const res = await fetch(TTL_URL);
+      if (!res.ok) throw new Error("Could not load " + TTL_URL + " (HTTP " + res.status + ")");
 
       const ttlText = await res.text();
 
-      // Parse Turtle
       const parser = new N3.Parser();
       const quads = parser.parse(ttlText);
 
-      const SCI = "http://rs.tdwg.org/dwc/terms/scientificName";
-      const ALT = "http://www.w3.org/2004/02/skos/core#altLabel";
+      // Helpers
+      const endsWith = (uri, suffix) => uri && uri.toLowerCase().endsWith(suffix.toLowerCase());
+
+      // Common URIs (and we also support suffix matching)
+      const DWC_SCI = "http://rs.tdwg.org/dwc/terms/scientificName";
+      const SKOS_ALT = "http://www.w3.org/2004/02/skos/core#altLabel";
+      const SKOS_PREF = "http://www.w3.org/2004/02/skos/core#prefLabel";
+      const RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
 
       const bySubject = new Map();
 
@@ -275,28 +283,45 @@
         const p = q.predicate.value;
         const o = q.object;
 
-        if (!bySubject.has(s)) bySubject.set(s, { uri: s, sci: null, yo: [] });
+        if (!bySubject.has(s)) {
+          bySubject.set(s, { uri: s, sci: null, yo: [], labels: [], types: [] });
+        }
 
         const rec = bySubject.get(s);
 
-        if (p === SCI && o.termType === "Literal") rec.sci = o.value;
+        if (p === RDF_TYPE) rec.types.push(o.value);
 
-        if (p === ALT && o.termType === "Literal") {
+        // scientific name: exact dwc URI OR anything ending in "scientificName"
+        if ((p === DWC_SCI || endsWith(p, "/scientificName") || endsWith(p, "#scientificName")) && o.termType === "Literal") {
+          rec.sci = o.value;
+        }
+
+        // labels: skos:altLabel / prefLabel OR anything ending in "altLabel"/"prefLabel"
+        const isAlt = (p === SKOS_ALT || endsWith(p, "altLabel"));
+        const isPref = (p === SKOS_PREF || endsWith(p, "prefLabel"));
+
+        if ((isAlt || isPref) && o.termType === "Literal") {
+          const txt = o.value;
           const lang = (o.language || "").toLowerCase();
-          if (lang === "yo") rec.yo.push(o.value);
+
+          rec.labels.push({ txt, lang, pref: isPref });
+
+          // Yorùbá list (you can expand later to show ES/PT/FR labels too)
+          if (lang === "yo") rec.yo.push(txt);
         }
       }
 
+      // Treat anything with a scientific name as a Plant record
       const plants = Array.from(bySubject.values())
-        .filter(p => p.sci) // treat anything with scientificName as a plant node
-        .sort((a,b) => a.sci.localeCompare(b.sci));
+        .filter(r => r.sci)
+        .sort((a, b) => (a.sci || "").localeCompare(b.sci || ""));
 
-      if (statusEl) statusEl.textContent = "Loaded " + plants.length + " plant record(s) from plants.ttl.";
+      if (statusEl) statusEl.textContent = "Loaded " + plants.length + " plant record(s) from v0.2.1.";
 
       listEl.innerHTML = "";
 
       if (!plants.length) {
-        listEl.innerHTML = "<p><em>No plant records found in plants.ttl.</em></p>";
+        listEl.innerHTML = "<p><em>No plant records found. If your TTL uses a different property than scientificName, we can map it.</em></p>";
         return;
       }
 
@@ -323,9 +348,9 @@
     }
   }
 
-  // Run after DOM is ready
   window.addEventListener("DOMContentLoaded", loadPlantsTTL);
 </script>
+
 
 </body>
 </html>
