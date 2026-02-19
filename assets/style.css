@@ -108,3 +108,6 @@ footer {
   color: white;
   border-color: #2f4f2f;
 }
+
+.lang-panel { display: none; }
+.lang-panel.active { display: block; }
