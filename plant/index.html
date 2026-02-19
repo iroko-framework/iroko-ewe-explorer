@@ -255,89 +255,157 @@
     const statusEl = document.querySelector("#panel-en .muted");
     const listEl = document.getElementById("plant-list-en");
 
-    // ✅ parse v0.2.1 dataset
     const TTL_URL = "../data/ewe-plants-v0.2.1.ttl";
 
     try {
       const res = await fetch(TTL_URL);
       if (!res.ok) throw new Error("Could not load " + TTL_URL + " (HTTP " + res.status + ")");
-
       const ttlText = await res.text();
 
       const parser = new N3.Parser();
       const quads = parser.parse(ttlText);
 
-      // Helpers
-      const endsWith = (uri, suffix) => uri && uri.toLowerCase().endsWith(suffix.toLowerCase());
-
-      // Common URIs (and we also support suffix matching)
-      const DWC_SCI = "http://rs.tdwg.org/dwc/terms/scientificName";
-      const SKOS_ALT = "http://www.w3.org/2004/02/skos/core#altLabel";
-      const SKOS_PREF = "http://www.w3.org/2004/02/skos/core#prefLabel";
       const RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+      const SKOS_PREF = "http://www.w3.org/2004/02/skos/core#prefLabel";
+      const SKOS_ALT  = "http://www.w3.org/2004/02/skos/core#altLabel";
 
+      const DCT_ID = "http://purl.org/dc/terms/identifier";
+      const DCT_SOURCE = "http://purl.org/dc/terms/source";
+      const DCT_REL = "http://purl.org/dc/terms/relation";
+
+      const DWC_SCI = "http://rs.tdwg.org/dwc/terms/scientificName";
+
+      const IROKO_PLANT = "https://iroko-framework.org/ewe/Plant";
+      const IROKO_ACCESS = "https://iroko-framework.org/ewe/hasAccessLevel";
+      const IROKO_MED = "https://iroko-framework.org/ewe/hasMedicinalCategory";
+      const IROKO_RIT = "https://iroko-framework.org/ewe/hasRitualCategory";
+      const IROKO_NAMEMETHOD = "https://iroko-framework.org/ewe/nameListMethod";
+
+      // 1) Build concept label map: URI -> prefLabel
+      const conceptLabel = new Map();
+      for (const q of quads) {
+        if (q.predicate.value === SKOS_PREF && q.object.termType === "Literal") {
+          conceptLabel.set(q.subject.value, q.object.value);
+        }
+      }
+
+      // 2) Build plant records (only subjects typed iroko:Plant)
       const bySubject = new Map();
+      const plantSubjects = new Set();
 
       for (const q of quads) {
         const s = q.subject.value;
         const p = q.predicate.value;
         const o = q.object;
 
+        if (p === RDF_TYPE && o.value === IROKO_PLANT) {
+          plantSubjects.add(s);
+        }
+
         if (!bySubject.has(s)) {
-          bySubject.set(s, { uri: s, sci: null, yo: [], labels: [], types: [] });
+          bySubject.set(s, {
+            uri: s,
+            id: null,
+            sci: null,
+            yo: [],
+            en: [],
+            nameListMethod: null,
+            access: [],
+            medicinal: [],
+            ritual: [],
+            source: [],
+            links: []
+          });
         }
 
         const rec = bySubject.get(s);
 
-        if (p === RDF_TYPE) rec.types.push(o.value);
+        if (p === DCT_ID && o.termType === "Literal") rec.id = o.value;
+        if (p === DWC_SCI && o.termType === "Literal") rec.sci = o.value;
 
-        // scientific name: exact dwc URI OR anything ending in "scientificName"
-        if ((p === DWC_SCI || endsWith(p, "/scientificName") || endsWith(p, "#scientificName")) && o.termType === "Literal") {
-          rec.sci = o.value;
+        if (p === SKOS_ALT && o.termType === "Literal") {
+          const lang = (o.language || "").toLowerCase();
+          if (lang === "yo") rec.yo.push(o.value);
+          if (lang === "en") rec.en.push(o.value);
         }
 
-        // labels: skos:altLabel / prefLabel OR anything ending in "altLabel"/"prefLabel"
-        const isAlt = (p === SKOS_ALT || endsWith(p, "altLabel"));
-        const isPref = (p === SKOS_PREF || endsWith(p, "prefLabel"));
+        if (p === IROKO_NAMEMETHOD && o.termType === "Literal") rec.nameListMethod = o.value;
 
-        if ((isAlt || isPref) && o.termType === "Literal") {
-          const txt = o.value;
-          const lang = (o.language || "").toLowerCase();
+        if (p === IROKO_ACCESS && o.termType === "NamedNode") rec.access.push(o.value);
+        if (p === IROKO_MED && o.termType === "NamedNode") rec.medicinal.push(o.value);
+        if (p === IROKO_RIT && o.termType === "NamedNode") rec.ritual.push(o.value);
 
-          rec.labels.push({ txt, lang, pref: isPref });
+        if (p === DCT_SOURCE && o.termType === "Literal") rec.source.push(o.value);
 
-          // Yorùbá list (you can expand later to show ES/PT/FR labels too)
-          if (lang === "yo") rec.yo.push(txt);
+        if (p === DCT_REL) {
+          // relation can be NamedNode (URL) or Literal
+          rec.links.push(o.value);
         }
       }
 
-      // Treat anything with a scientific name as a Plant record
-      const plants = Array.from(bySubject.values())
-        .filter(r => r.sci)
-        .sort((a, b) => (a.sci || "").localeCompare(b.sci || ""));
+      // 3) Only keep iroko:Plant subjects
+      const plants = Array.from(plantSubjects)
+        .map(uri => bySubject.get(uri))
+        .filter(Boolean)
+        .sort((a,b) => (a.sci || "").localeCompare(b.sci || ""));
 
       if (statusEl) statusEl.textContent = "Loaded " + plants.length + " plant record(s) from v0.2.1.";
-
       listEl.innerHTML = "";
 
       if (!plants.length) {
-        listEl.innerHTML = "<p><em>No plant records found. If your TTL uses a different property than scientificName, we can map it.</em></p>";
+        listEl.innerHTML = "<p><em>No iroko:Plant records found.</em></p>";
         return;
       }
 
+      // helper to label URIs
+      const labelize = (uri) => conceptLabel.get(uri) || uri.split("/").pop();
+
       for (const p of plants) {
         const yo = p.yo.length ? p.yo.join("; ") : "—";
+        const en = p.en.length ? p.en.join("; ") : "—";
+
+        const access = p.access.length ? p.access.map(labelize).join(", ") : "—";
+        const med = p.medicinal.length ? p.medicinal.map(labelize).join(", ") : "—";
+        const rit = p.ritual.length ? p.ritual.map(labelize).join(", ") : "—";
+
+        const source = p.source.length ? p.source.join("; ") : "—";
+
+        // keep only URL-looking relations for display
+        const links = p.links.filter(x => typeof x === "string" && (x.startsWith("http://") || x.startsWith("https://")));
+        const linkHtml = links.length
+          ? links.map(u => `<a href="${u}" target="_blank" rel="noopener noreferrer">External record</a>`).join(" | ")
+          : "—";
 
         const card = document.createElement("div");
         card.style.border = "1px solid rgba(48,64,32,0.18)";
         card.style.borderRadius = "12px";
         card.style.padding = "12px 14px";
         card.style.margin = "12px 0";
+
         card.innerHTML = `
-          <div style="font-weight:700;">${p.sci}</div>
-          <div style="opacity:.85;"><strong>Yorùbá:</strong> ${yo}</div>
-          <div style="opacity:.7; font-size:.9rem; margin-top:6px;">${p.uri}</div>
+          <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+            <div style="font-weight:700;">${p.sci || "No scientific name"}</div>
+            <div style="opacity:.75; font-size:.92rem;">${p.id || p.uri.split("/").pop()}</div>
+          </div>
+
+          <div style="margin-top:6px; opacity:.9;"><strong>Yorùbá:</strong> ${yo}</div>
+          <div style="opacity:.85;"><strong>English:</strong> ${en}</div>
+
+          <div style="margin-top:8px; opacity:.85;">
+            <strong>Access:</strong> ${access}<br>
+            <strong>Medicinal:</strong> ${med}<br>
+            <strong>Ritual:</strong> ${rit}
+          </div>
+
+          <div style="margin-top:8px; opacity:.85;">
+            <strong>Name list method:</strong> ${p.nameListMethod || "—"}<br>
+            <strong>Source:</strong> ${source}<br>
+            <strong>Links:</strong> ${linkHtml}
+          </div>
+
+          <div style="opacity:.65; font-size:.9rem; margin-top:8px;">${p.uri}</div>
         `;
+
         listEl.appendChild(card);
       }
 
@@ -350,6 +418,7 @@
 
   window.addEventListener("DOMContentLoaded", loadPlantsTTL);
 </script>
+
 
 
 </body>
