@@ -1,0 +1,51 @@
+@prefix iroko: <https://iroko-framework.org/ewe/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix dwc: <http://rs.tdwg.org/dwc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+#################################################################
+# Plant Node
+#################################################################
+
+iroko:Plant0001
+    a iroko:Plant ;
+    dcterms:identifier "Plant0001" ;
+    dwc:scientificName "Fictitia africana" ;
+    skos:altLabel "Àjàgẹ̀dẹ̀"@yo ;
+    skos:altLabel "Ajagede"@yo ;
+    skos:altLabel "Fictitious plant"@en ;
+    iroko:nameListMethod "alphabetical" ;
+    iroko:hasAccessLevel iroko:Public-Unrestricted ;
+    iroko:hasMedicinalCategory iroko:AntiInflammatory ;
+    iroko:hasRitualCategory iroko:AncestralInvocation ;
+    dcterms:source "Verger 1957 (Portuguese edition)" ;
+    dcterms:relation <https://sernecportal.org/portal/collections/individual/index.php?occid=33214371&clid=0> .
+
+#################################################################
+# Controlled Vocabulary Links
+#################################################################
+
+iroko:Public-Unrestricted
+    a skos:Concept ;
+    skos:prefLabel "Public-Unrestricted"@en .
+
+iroko:AntiInflammatory
+    a skos:Concept ;
+    skos:prefLabel "Anti-Inflammatory"@en .
+
+iroko:AncestralInvocation
+    a skos:Concept ;
+    skos:prefLabel "Ancestral Invocation"@en .
+
+#################################################################
+# Optional Herbarium Specimen Node (Darwin Core aligned)
+#################################################################
+
+iroko:Specimen33214371
+    a dwc:Occurrence ;
+    dwc:occurrenceID "33214371" ;
+    dwc:institutionCode "SERNEC" ;
+    dwc:scientificName "Fictitia africana" ;
+    dcterms:relation <https://sernecportal.org/portal/collections/individual/index.php?occid=33214371&clid=0> .
