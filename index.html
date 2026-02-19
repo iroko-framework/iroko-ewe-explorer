@@ -4,16 +4,115 @@
 <meta charset="UTF-8">
 <title>Iroko Ewé Knowledge Explorer</title>
 <link rel="stylesheet" href="assets/style.css">
+
+<style>
+/* Header Styling */
+
+.iroko-header {
+  background-color: #d9dcc2;
+  border-radius: 18px;
+  padding: 30px 40px;
+  margin-bottom: 50px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.header-inner {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.logo-block img {
+  height: 110px;
+}
+
+.header-text h1 {
+  margin: 0;
+  font-size: 2.3rem;
+  color: #2f4f2f;
+}
+
+.subtitle {
+  margin-top: 8px;
+  color: #3d4d3d;
+  font-size: 1.1rem;
+}
+
+.version-pill {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 6px 14px;
+  background-color: #c8ccb0;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+.lang-buttons {
+  margin-top: 18px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.lang-buttons button {
+  background-color: #e8ebd2;
+  border: 1px solid #b7b99f;
+  padding: 6px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.lang-buttons button.active {
+  background-color: #2f4f2f;
+  color: white;
+  border-color: #2f4f2f;
+}
+
+/* Language Panels */
+
+.lang-panel {
+  display: none;
+  margin-top: 30px;
+}
+
+.lang-panel.active {
+  display: block;
+}
+</style>
+
 </head>
+
 <body>
 
-<header>
-  <img src="assets/IHS-Logo.jpg" alt="Iroko Historical Society Logo" class="logo">
-  <div>
-    <h1>Iroko Ewé Knowledge Explorer</h1>
-    <p class="subtitle">
-      Stewardship-Centered Linked Data for Afro-Atlantic Ethnobotanical Knowledge
-    </p>
+<header class="iroko-header">
+  <div class="header-inner">
+
+    <div class="logo-block">
+      <img src="assets/IHS-Logo.jpg" alt="Iroko Historical Society Logo">
+    </div>
+
+    <div class="header-text">
+
+      <h1>Iroko Ewé Knowledge Explorer</h1>
+
+      <p class="subtitle">
+        Linked Data for Ethically Governed Ethnobotanical Knowledge
+      </p>
+
+      <div class="version-pill">
+        Version 0.2.1 | February 2026
+      </div>
+
+      <div class="lang-buttons">
+        <button onclick="setLang('en')" id="btn-en">English</button>
+        <button onclick="setLang('es')" id="btn-es">Español</button>
+        <button onclick="setLang('fr')" id="btn-fr">Français</button>
+        <button onclick="setLang('pt')" id="btn-pt">Português</button>
+        <button onclick="setLang('yo')" id="btn-yo">Èdè Yorùbá</button>
+      </div>
+
+    </div>
   </div>
 </header>
 
@@ -24,38 +123,8 @@
   </ul>
 </nav>
 
-<section>
+<!-- ENGLISH -->
+<section id="panel-en" class="lang-panel active">
   <h2>About This Explorer</h2>
-
   <p>
-    The Iroko Ewé Knowledge Explorer provides a public interface
-    for navigating plant records structured using the Iroko Framework.
-    Data is generated through OpenRefine RDF Transform and modeled
-    as linked data.
-  </p>
-
-  <p>
-    This environment demonstrates a Sacred Metadata approach:
-    botanical and linguistic knowledge is discoverable while
-    spiritually sensitive knowledge remains governed through
-    explicit access tiers.
-  </p>
-
-  <p>
-    The dataset follows the CARE Principles for Indigenous Data Governance:
-    <strong>Collective Benefit, Authority to Control, Responsibility, and Ethics.</strong>
-  </p>
-</section>
-
-<footer>
-  <p>
-    Iroko Ewé Knowledge Explorer<br>
-    A demonstration environment for governance-aware semantic publishing.
-  </p>
-  <p>
-    Developed under the Iroko Historical Society<br>
-  </p>
-</footer>
-
-</body>
-</html>
+    The Iroko Ewé Knowledge Exp
