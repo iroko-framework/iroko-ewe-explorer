@@ -1,0 +1,28 @@
+@prefix ex: <https://example.org/iroko-db/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dwc: <http://rs.tdwg.org/dwc/terms/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:Plant0001
+  a ex:Plant ;
+  dcterms:identifier "Plant0001" ;
+  dwc:scientificName "Fictitia africana" ;
+  skos:altLabel "Ajagede"@yo ;
+  skos:altLabel "Àjàgẹ̀dẹ̀"@yo ;
+  skos:altLabel "Fictitious plant"@en ;
+  ex:nameListMethod "alphabetical" ;
+  ex:hasAccessLevel ex:PublicUnrestricted ;
+  dcterms:relation <https://sernecportal.org/portal/collections/individual/index.php?occid=33214371&clid=0> .
+
+ex:Plant0002
+  a ex:Plant ;
+  dcterms:identifier "Plant0002" ;
+  dwc:scientificName "Imaginaris robusta" ;
+  skos:altLabel "Ewé àlà"@yo ;
+  skos:altLabel "Ewe ala"@yo ;
+  ex:nameListMethod "alphabetical" ;
+  ex:hasAccessLevel ex:LimitedCommunity .
+
+ex:PublicUnrestricted a skos:Concept ; skos:prefLabel "Public-Unrestricted"@en .
+ex:LimitedCommunity a skos:Concept ; skos:prefLabel "Limited-Community"@en .
