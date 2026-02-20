@@ -251,20 +251,37 @@
 </script>
   
 <script>
-  async function loadPlantsTTL() {
+  async function fetchText(url) {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Could not load " + url + " (HTTP " + res.status + ")");
+    return await res.text();
+  }
+
+  function pickByLang(map, lang) {
+    const order = [lang, "en", "yo", "es", "pt", "fr"];
+    for (const l of order) {
+      if (map[l] && map[l].length) return map[l];
+    }
+    return [];
+  }
+
+  async function loadPlantsGraph() {
     const statusEl = document.querySelector("#panel-en .muted");
     const listEl = document.getElementById("plant-list-en");
 
-    const TTL_URL = "../data/ewe-plants-v0.2.1.ttl";
+    const PLANTS_TTL = "../data/ewe-plants-v0.2.1.ttl";
+    const VOCAB_TTL  = "../data/iroko-vocab-v0.2.1.ttl";
 
     try {
-      const res = await fetch(TTL_URL);
-      if (!res.ok) throw new Error("Could not load " + TTL_URL + " (HTTP " + res.status + ")");
-      const ttlText = await res.text();
+      const [plantsText, vocabText] = await Promise.all([
+        fetchText(PLANTS_TTL),
+        fetchText(VOCAB_TTL)
+      ]);
 
       const parser = new N3.Parser();
-      const quads = parser.parse(ttlText);
+      const quads = parser.parse(plantsText + "\n\n" + vocabText);
 
+      // URIs
       const RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
       const SKOS_PREF = "http://www.w3.org/2004/02/skos/core#prefLabel";
       const SKOS_ALT  = "http://www.w3.org/2004/02/skos/core#altLabel";
@@ -279,17 +296,16 @@
       const IROKO_ACCESS = "https://iroko-framework.org/ewe/hasAccessLevel";
       const IROKO_MED = "https://iroko-framework.org/ewe/hasMedicinalCategory";
       const IROKO_RIT = "https://iroko-framework.org/ewe/hasRitualCategory";
+
       const IROKO_NAMEMETHOD = "https://iroko-framework.org/ewe/nameListMethod";
+      const IROKO_COLLISION_FLAG = "https://iroko-framework.org/ewe/nameCollisionFlag";
+      const IROKO_COLLISION_NOTE = "https://iroko-framework.org/ewe/nameCollisionNote";
+      const IROKO_RITUAL_NOTE = "https://iroko-framework.org/ewe/ritualContextNote";
 
-      // 1) Build concept label map: URI -> prefLabel
-      const conceptLabel = new Map();
-      for (const q of quads) {
-        if (q.predicate.value === SKOS_PREF && q.object.termType === "Literal") {
-          conceptLabel.set(q.subject.value, q.object.value);
-        }
-      }
+      // Concept labels: URI -> { lang: [labels...] }
+      const conceptLabels = new Map();
 
-      // 2) Build plant records (only subjects typed iroko:Plant)
+      // Records
       const bySubject = new Map();
       const plantSubjects = new Set();
 
@@ -298,6 +314,16 @@
         const p = q.predicate.value;
         const o = q.object;
 
+        // Collect SKOS prefLabels into a language map
+        if (p === SKOS_PREF && o.termType === "Literal") {
+          const lang = (o.language || "en").toLowerCase();
+          if (!conceptLabels.has(s)) conceptLabels.set(s, {});
+          const m = conceptLabels.get(s);
+          if (!m[lang]) m[lang] = [];
+          m[lang].push(o.value);
+        }
+
+        // Track plant type
         if (p === RDF_TYPE && o.value === IROKO_PLANT) {
           plantSubjects.add(s);
         }
@@ -307,12 +333,17 @@
             uri: s,
             id: null,
             sci: null,
-            yo: [],
-            en: [],
+            altByLang: {},
+
             nameListMethod: null,
+            collisionFlag: null,
+            collisionNoteByLang: {},
+            ritualNoteByLang: {},
+
             access: [],
             medicinal: [],
             ritual: [],
+
             source: [],
             links: []
           });
@@ -324,32 +355,52 @@
         if (p === DWC_SCI && o.termType === "Literal") rec.sci = o.value;
 
         if (p === SKOS_ALT && o.termType === "Literal") {
-          const lang = (o.language || "").toLowerCase();
-          if (lang === "yo") rec.yo.push(o.value);
-          if (lang === "en") rec.en.push(o.value);
+          const lang = (o.language || "und").toLowerCase();
+          if (!rec.altByLang[lang]) rec.altByLang[lang] = [];
+          rec.altByLang[lang].push(o.value);
         }
 
         if (p === IROKO_NAMEMETHOD && o.termType === "Literal") rec.nameListMethod = o.value;
+
+        if (p === IROKO_COLLISION_FLAG && o.termType === "Literal") rec.collisionFlag = o.value;
+
+        if (p === IROKO_COLLISION_NOTE && o.termType === "Literal") {
+          const lang = (o.language || "en").toLowerCase();
+          if (!rec.collisionNoteByLang[lang]) rec.collisionNoteByLang[lang] = [];
+          rec.collisionNoteByLang[lang].push(o.value);
+        }
+
+        if (p === IROKO_RITUAL_NOTE && o.termType === "Literal") {
+          const lang = (o.language || "en").toLowerCase();
+          if (!rec.ritualNoteByLang[lang]) rec.ritualNoteByLang[lang] = [];
+          rec.ritualNoteByLang[lang].push(o.value);
+        }
 
         if (p === IROKO_ACCESS && o.termType === "NamedNode") rec.access.push(o.value);
         if (p === IROKO_MED && o.termType === "NamedNode") rec.medicinal.push(o.value);
         if (p === IROKO_RIT && o.termType === "NamedNode") rec.ritual.push(o.value);
 
         if (p === DCT_SOURCE && o.termType === "Literal") rec.source.push(o.value);
-
-        if (p === DCT_REL) {
-          // relation can be NamedNode (URL) or Literal
-          rec.links.push(o.value);
-        }
+        if (p === DCT_REL) rec.links.push(o.value);
       }
 
-      // 3) Only keep iroko:Plant subjects
+      // Resolve concept label (in the page language, with fallback)
+      function labelize(uri, lang) {
+        const m = conceptLabels.get(uri);
+        if (m) {
+          const chosen = pickByLang(m, lang);
+          if (chosen.length) return chosen[0];
+        }
+        return uri.split("/").pop();
+      }
+
+      const pageLang = "en"; // we can later bind this to the active panel
       const plants = Array.from(plantSubjects)
-        .map(uri => bySubject.get(uri))
+        .map(u => bySubject.get(u))
         .filter(Boolean)
         .sort((a,b) => (a.sci || "").localeCompare(b.sci || ""));
 
-      if (statusEl) statusEl.textContent = "Loaded " + plants.length + " plant record(s) from v0.2.1.";
+      if (statusEl) statusEl.textContent = "Loaded " + plants.length + " plant record(s) (plants + vocab).";
       listEl.innerHTML = "";
 
       if (!plants.length) {
@@ -357,21 +408,24 @@
         return;
       }
 
-      // helper to label URIs
-      const labelize = (uri) => conceptLabel.get(uri) || uri.split("/").pop();
-
       for (const p of plants) {
-        const yo = p.yo.length ? p.yo.join("; ") : "—";
-        const en = p.en.length ? p.en.join("; ") : "—";
+        const yo = (p.altByLang["yo"] || []).join("; ") || "—";
+        const enAlt = (p.altByLang["en"] || []).join("; ") || "—";
 
-        const access = p.access.length ? p.access.map(labelize).join(", ") : "—";
-        const med = p.medicinal.length ? p.medicinal.map(labelize).join(", ") : "—";
-        const rit = p.ritual.length ? p.ritual.map(labelize).join(", ") : "—";
+        const access = p.access.length ? p.access.map(u => labelize(u, pageLang)).join(", ") : "—";
+        const med = p.medicinal.length ? p.medicinal.map(u => labelize(u, pageLang)).join(", ") : "—";
+        const rit = p.ritual.length ? p.ritual.map(u => labelize(u, pageLang)).join(", ") : "—";
+
+        const collisionNotes = pickByLang(p.collisionNoteByLang, pageLang);
+        const collisionHtml = collisionNotes.length ? collisionNotes.map(t => `<li>${t}</li>`).join("") : "";
+
+        const ritualNotes = pickByLang(p.ritualNoteByLang, pageLang);
+        const ritualHtml = ritualNotes.length ? ritualNotes.map(t => `<li>${t}</li>`).join("") : "";
 
         const source = p.source.length ? p.source.join("; ") : "—";
 
-        // keep only URL-looking relations for display
-        const links = p.links.filter(x => typeof x === "string" && (x.startsWith("http://") || x.startsWith("https://")));
+        const links = p.links
+          .filter(x => typeof x === "string" && (x.startsWith("http://") || x.startsWith("https://")));
         const linkHtml = links.length
           ? links.map(u => `<a href="${u}" target="_blank" rel="noopener noreferrer">External record</a>`).join(" | ")
           : "—";
@@ -389,7 +443,7 @@
           </div>
 
           <div style="margin-top:6px; opacity:.9;"><strong>Yorùbá:</strong> ${yo}</div>
-          <div style="opacity:.85;"><strong>English:</strong> ${en}</div>
+          <div style="opacity:.85;"><strong>English:</strong> ${enAlt}</div>
 
           <div style="margin-top:8px; opacity:.85;">
             <strong>Access:</strong> ${access}<br>
@@ -403,6 +457,16 @@
             <strong>Links:</strong> ${linkHtml}
           </div>
 
+          <div style="margin-top:10px;">
+            <strong>Name collision:</strong> ${p.collisionFlag ? p.collisionFlag : "—"}
+            ${collisionHtml ? `<ul style="margin-top:6px;">${collisionHtml}</ul>` : ""}
+          </div>
+
+          <div style="margin-top:10px;">
+            <strong>Ritual context note:</strong>
+            ${ritualHtml ? `<ul style="margin-top:6px;">${ritualHtml}</ul>` : " —"}
+          </div>
+
           <div style="opacity:.65; font-size:.9rem; margin-top:8px;">${p.uri}</div>
         `;
 
@@ -410,13 +474,13 @@
       }
 
     } catch (err) {
-      if (statusEl) statusEl.textContent = "Error loading plant data.";
+      if (statusEl) statusEl.textContent = "Error loading RDF graph.";
       if (listEl) listEl.innerHTML = "<p><em>" + err.message + "</em></p>";
       console.error(err);
     }
   }
 
-  window.addEventListener("DOMContentLoaded", loadPlantsTTL);
+  window.addEventListener("DOMContentLoaded", loadPlantsGraph);
 </script>
 
 
