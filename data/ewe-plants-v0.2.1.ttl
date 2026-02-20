@@ -181,9 +181,9 @@ iroko:Plant0003
     dcterms:identifier "Plant0003" ;
     dwc:scientificName "Milicia excelsa" ;
 
-    # Scientific synonyms (skos:altLabel @la per data model)
-    skos:altLabel "Chlorophora excelsa"@la ;
-    skos:altLabel "Milicia regia"@la ;
+    # Scientific synonyms (untagged literals per data model)
+    skos:altLabel "Chlorophora excelsa" ;
+    skos:altLabel "Milicia regia" ;
 
     # Primary vernacular name (Yoruba)
     skos:prefLabel "Iròkò"@yo ;
@@ -235,8 +235,8 @@ iroko:Plant0004
     dcterms:identifier "Plant0004" ;
     dwc:scientificName "Citrus aurantium" ;
 
-    # Scientific synonyms (skos:altLabel @la per data model)
-    skos:altLabel "Citrus bigaradia"@la ;
+    # Scientific synonyms (untagged literals per data model)
+    skos:altLabel "Citrus bigaradia" ;
 
     # Primary vernacular name (Spanish — this plant is primarily known by its Spanish name in practice)
     skos:prefLabel "Naranja agria"@es ;
