@@ -19,7 +19,7 @@ iroko:Plant0001
     skos:altLabel "Àjàgẹ̀dẹ̀"@yo ;
     skos:altLabel "Ajagede"@yo ;
     skos:altLabel "Fictitious plant"@en ;
-    skos:altlabel "La Ceiba"@es ;
+    skos:altLabel "La Ceiba"@es ;
 
     # Lucumí (use private BCP 47 tags)
     skos:altLabel "Atori A"@yo ;
@@ -79,10 +79,11 @@ iroko:Plant0002
     skos:altLabel "Àjàgẹ̀dẹ̀"@yo ;
     skos:altLabel "Ajagede"@yo ;
     skos:altLabel "Fictitious tree"@en ;
+    skos:altLabel "La Ceiba"@es ;
 
     # Lucumí (use private BCP 47 tags)
-    skos:altLabel "Atori A"@x-lucumi ;
-    skos:altLabel "Atori B"@x-lucumi ;
+    skos:altLabel "Atori A"@yo-x-lucumi ;
+    skos:altLabel "Atori B"@yo-x-lucumi ;
 
     # Method note: list is alphabetical, not asserting primacy
     iroko:nameListMethod "alphabetical" ;
