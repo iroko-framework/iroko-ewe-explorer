@@ -108,18 +108,18 @@ iroko:Plant0002
     dcterms:relation <https://sernecportal.org/portal/collections/individual/index.php?occid=33214371&clid=0> ;
 
     # Option B modeling change: explicit plant → specimen link
-    iroko:hasSpecimen iroko:Specimen33214371
+    iroko:hasSpecimen iroko:Specimen33214377
 .
 
 #################################################################
 # Herbarium Specimen Node (Darwin Core aligned)
 #################################################################
 
-iroko:Specimen33214371
+iroko:Specimen33214377
     a dwc:Occurrence ;
 
     # Darwin Core fields
-    dwc:occurrenceID "33214371" ;
+    dwc:occurrenceID "33214377" ;
     dwc:institutionCode "SERNEC" ;
     dwc:scientificName "Fictitia americana" ;
 
