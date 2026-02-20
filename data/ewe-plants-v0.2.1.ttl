@@ -12,14 +12,17 @@
 iroko:Plant0001
     a iroko:Plant ;
     dcterms:identifier "Plant0001" ;
-    dwc:scientificName "Fictitia grande africana" ;
+    dwc:scientificName "Fictitia africana" ;
     skos:altLabel "Àjàgẹ̀dẹ̀"@yo ;
     skos:altLabel "Ajagede"@yo ;
     skos:altLabel "Fictitious plant"@en ;
     iroko:nameListMethod "alphabetical" ;
+    iroko:nameCollisionFlag "true"^^xsd:boolean ;
+    iroko:nameCollisionNote "Shares the vernacular name “Iròkò” with Ceiba pentandra in some ritual and popular contexts; distinguished here by Verger attestation."@en ;
     iroko:hasAccessLevel iroko:Public-Unrestricted ;
     iroko:hasMedicinalCategory iroko:AntiInflammatory ;
     iroko:hasRitualCategory iroko:AncestralInvocation ;
+    iroko:ritualContextNote "This is considered one of the most sacred trees in the Afro-Atlantic world."@en ;
     dcterms:source "Verger 1957 (Portuguese edition)" ;
     dcterms:relation <https://sernecportal.org/portal/collections/individual/index.php?occid=33214371&clid=0> .
 
