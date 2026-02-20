@@ -1,0 +1,51 @@
+@prefix iroko: <https://iroko-framework.org/ewe/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+#################################################################
+# Controlled Vocabulary Concepts (v0.2.1)
+#################################################################
+
+# --- Access Levels ---
+
+iroko:Public-Unrestricted a skos:Concept ;
+  skos:prefLabel "Public-Unrestricted"@en ;
+  skos:prefLabel "Público sin restricciones"@es ;
+  skos:prefLabel "Público sem restrições"@pt ;
+  skos:prefLabel "Public sans restriction"@fr ;
+  skos:prefLabel "Gbogbo ènìyàn lè wọlé"@yo .
+
+iroko:Initiated-Only a skos:Concept ;
+  skos:prefLabel "Initiated Only"@en ;
+  skos:prefLabel "Solo iniciados"@es ;
+  skos:prefLabel "Somente iniciados"@pt ;
+  skos:prefLabel "Initiés seulement"@fr ;
+  skos:prefLabel "Àwọn tí wọ́n ti jẹmọ́ nìkan"@yo .
+
+# --- Medicinal Categories ---
+
+iroko:AntiInflammatory a skos:Concept ;
+  skos:prefLabel "Anti-Inflammatory"@en ;
+  skos:prefLabel "Antiinflamatorio"@es .
+
+iroko:RespiratorySupport a skos:Concept ;
+  skos:prefLabel "Respiratory Support"@en ;
+  skos:prefLabel "Apoyo respiratorio"@es .
+
+iroko:DigestiveSupport a skos:Concept ;
+  skos:prefLabel "Digestive Support"@en ;
+  skos:prefLabel "Apoyo digestivo"@es .
+
+# --- Ritual Categories ---
+
+iroko:AncestralInvocation a skos:Concept ;
+  skos:prefLabel "Ancestral Invocation"@en ;
+  skos:prefLabel "Invocación ancestral"@es .
+
+iroko:CosmologicalAssociation a skos:Concept ;
+  skos:prefLabel "Cosmological or Symbolic Association"@en ;
+  skos:prefLabel "Asociación cosmológica o simbólica"@es .
+
+iroko:HealingRestoration a skos:Concept ;
+  skos:prefLabel "Healing and Restoration"@en ;
+  skos:prefLabel "Curación y restauración"@es .
+
