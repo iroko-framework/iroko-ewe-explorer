@@ -19,7 +19,7 @@ iroko:Plant0001
     skos:altLabel "Àjàgẹ̀dẹ̀"@yo ;
     skos:altLabel "Ajagede"@yo ;
     skos:altLabel "Fictitious plant"@en ;
-    skos:altlabel "La Ceiba"@es
+    skos:altlabel "La Ceiba"@es ;
 
     # Lucumí (use private BCP 47 tags)
     skos:altLabel "Atori A"@yo ;
