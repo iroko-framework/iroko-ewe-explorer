@@ -432,10 +432,10 @@
         const enAlt = (p.altByLang["en"] || []).join("; ") || "—";
         const esCuAlt = (p.altByLang["es-cu"] || []).join("; ");
         const esAlt = (p.altByLang["es"] || []).filter(v => !esCuAlt.includes(v)).join("; ");
-        const ptAlt = (p.altByLang["pt"] || []).join("; ");
-        const frAlt = (p.altByLang["fr"] || []).join("; ");
-        const htAlt = (p.altByLang["ht"] || []).join("; ");
         const lucumiAlt = (p.altByLang["yo-x-lucumi"] || []).join("; ");
+        const htAlt = (p.altByLang["ht"] || []).join("; ");
+        const frAlt = (p.altByLang["fr"] || []).join("; ");
+        const ptAlt = (p.altByLang["pt"] || []).join("; ");
         const synHtml = (p.synonyms && p.synonyms.length) ? p.synonyms.join("; ") : null;
 
         // Resolve named-node sources via conceptLabels or dcterms:bibliographicCitation
