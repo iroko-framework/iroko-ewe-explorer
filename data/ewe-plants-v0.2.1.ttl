@@ -67,3 +67,61 @@ iroko:Specimen33214371
     # Link out to the public herbarium record
     dcterms:relation <https://sernecportal.org/portal/collections/individual/index.php?occid=33214371&clid=0>
 .
+
+iroko:Plant0002
+    a iroko:Plant ;
+
+    dcterms:identifier "Plant0002" ;
+    dwc:scientificName "Fictitia americana" ;
+
+    # Naming (multilingual / multi-tradition)
+    skos:altLabel "Àjàgẹ̀dẹ̀"@yo ;
+    skos:altLabel "Ajagede"@yo ;
+    skos:altLabel "Fictitious tree"@en ;
+
+    # Lucumí (use private BCP 47 tags)
+    skos:altLabel "Atori A"@yo-x-lucumi ;
+    skos:altLabel "Atori B"@yo-x-lucumi-variantA ;
+
+    # Method note: list is alphabetical, not asserting primacy
+    iroko:nameListMethod "alphabetical" ;
+
+    # Name collision note (no boolean needed unless you plan "flag but withhold note")
+    iroko:nameCollisionNote
+        "2) Shares the vernacular name “Iròkò” with Ceiba pentandra in some ritual and popular contexts; distinguished here by Verger attestation."@en ;
+
+    # Governance-aware classification
+    iroko:hasAccessLevel iroko:Public-Unrestricted ;
+    iroko:hasMedicinalCategory iroko:AntiInflammatory ;
+    iroko:hasRitualCategory iroko:AncestralInvocation ;
+
+    # Ritual context note (general note about the plant’s ritual position)
+    iroko:ritualContextNote
+        "2) This is considered one of the most sacred trees in the Afro-Atlantic world."@en ;
+
+    # Sources: allow multiple statements
+    dcterms:source "Pierre Fatumbi Verger, Ewé: The Use of Plants in Yoruba Society (1995), English edition." ;
+    ---
+    dcterms:source "Dalia Quiros-Moran, Guide to Afro-Cuban Herbalism (2009)." ;
+
+    # External reference (can be used for display)
+    dcterms:relation <https://sernecportal.org/portal/collections/individual/index.php?occid=33214371&clid=0> ;
+
+    # Option B modeling change: explicit plant → specimen link
+    iroko:hasSpecimen iroko:Specimen33214371
+.
+
+#################################################################
+# Herbarium Specimen Node (Darwin Core aligned)
+#################################################################
+
+iroko:Specimen33214371
+    a dwc:Occurrence ;
+
+    # Darwin Core fields
+    dwc:occurrenceID "33214371" ;
+    dwc:institutionCode "SERNEC" ;
+    dwc:scientificName "Fictitia americana" ;
+
+    # Link out to the public herbarium record
+    dcterms:relation <https://sernecportal.org/portal/collections/individual/index.php?occid=33214371&clid=0>
