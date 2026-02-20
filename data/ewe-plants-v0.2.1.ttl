@@ -80,8 +80,8 @@ iroko:Plant0002
     skos:altLabel "Fictitious tree"@en ;
 
     # Lucumí (use private BCP 47 tags)
-    skos:altLabel "Atori A"@yo-x-lucumi ;
-    skos:altLabel "Atori B"@yo-x-lucumi-variantA ;
+    skos:altLabel "Atori A"@x-lucumi ;
+    skos:altLabel "Atori B"@x-lucumi ;
 
     # Method note: list is alphabetical, not asserting primacy
     iroko:nameListMethod "alphabetical" ;
