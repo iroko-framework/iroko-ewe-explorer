@@ -343,6 +343,7 @@
             sci: null,
             altByLang: {},
             prefByLang: {},
+            synonyms: [],
 
             collisionFlag: null,
             collisionNoteByLang: {},
@@ -364,9 +365,15 @@
         if (p === DWC_SCI && o.termType === "Literal") rec.sci = o.value;
 
         if (p === SKOS_ALT && o.termType === "Literal") {
-          const lang = (o.language || "und").toLowerCase();
-          if (!rec.altByLang[lang]) rec.altByLang[lang] = [];
-          rec.altByLang[lang].push(o.value);
+          const lang = (o.language || "").toLowerCase();
+          if (lang === "") {
+            // Untagged altLabel = scientific synonym per data model
+            if (!rec.synonyms) rec.synonyms = [];
+            rec.synonyms.push(o.value);
+          } else {
+            if (!rec.altByLang[lang]) rec.altByLang[lang] = [];
+            rec.altByLang[lang].push(o.value);
+          }
         }
 
         if (p === IROKO_COLLISION_FLAG && o.termType === "Literal") rec.collisionFlag = o.value;
@@ -423,14 +430,13 @@
       for (const p of plants) {
         const yo = (p.altByLang["yo"] || []).concat(p.prefByLang?.["yo"] || []).filter((v,i,a)=>a.indexOf(v)===i).join("; ") || "—";
         const enAlt = (p.altByLang["en"] || []).join("; ") || "—";
-        const lucumiAlt = (p.altByLang["yo-x-lucumi"] || []).join("; ");
         const esCuAlt = (p.altByLang["es-cu"] || []).join("; ");
         const esAlt = (p.altByLang["es"] || []).filter(v => !esCuAlt.includes(v)).join("; ");
-        const htAlt = (p.altByLang["ht"] || []).join("; ");
-        const frAlt = (p.altByLang["fr"] || []).join("; ");
         const ptAlt = (p.altByLang["pt"] || []).join("; ");
-        // Latin altLabels are scientific synonyms per data model
-        const synHtml = (p.altByLang["la"] || []).join("; ") || null;
+        const frAlt = (p.altByLang["fr"] || []).join("; ");
+        const htAlt = (p.altByLang["ht"] || []).join("; ");
+        const lucumiAlt = (p.altByLang["yo-x-lucumi"] || []).join("; ");
+        const synHtml = (p.synonyms && p.synonyms.length) ? p.synonyms.join("; ") : null;
 
         // Resolve named-node sources via conceptLabels or dcterms:bibliographicCitation
         const DCT_BIB = "http://purl.org/dc/terms/bibliographicCitation";
@@ -489,7 +495,6 @@
           ${frAlt ? `<div style="opacity:.85;"><strong>Français:</strong> ${frAlt}</div>` : ""}
           ${htAlt ? `<div style="opacity:.85;"><strong>Kreyòl ayisyen:</strong> ${htAlt}</div>` : ""}
           ${lucumiAlt ? `<div style="opacity:.85;"><strong>Lucumí:</strong> ${lucumiAlt}</div>` : ""}
-          ${laAlt ? `<div style="opacity:.85;"><strong>Latin:</strong> ${laAlt}</div>` : ""}
 
           ${collisionHtml ? `
           <div style="margin-top:8px;">
