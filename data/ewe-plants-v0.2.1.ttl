@@ -12,8 +12,8 @@
 
 iroko:VergerEwe_1995_en
     a dcterms:BibliographicResource ;
-    skos:prefLabel "Verger, Ewé: The Use of Plants in Yoruba Society (1995), English ed."@en ;
-    dcterms:bibliographicCitation "Pierre Fatumbi Verger, Ewé: The Use of Plants in Yoruba Society (1995), English edition."@en ;
+    skos:prefLabel "Verger, Ewé (1995)"@en ;
+    dcterms:bibliographicCitation "Verger, Pierre Fatumbi. Ewé: The Use of Plants in Yoruba Society. 1995."@en ;
     dcterms:creator "Pierre Fatumbi Verger" ;
     dcterms:title "Ewé: The Use of Plants in Yoruba Society" ;
     dcterms:date "1995"^^xsd:gYear ;
@@ -24,7 +24,7 @@ iroko:VergerEwe_1995_en
 iroko:QuirosMoran_2009
     a dcterms:BibliographicResource ;
     skos:prefLabel "Quiros-Moran, Guide to Afro-Cuban Herbalism (2009)"@en ;
-    dcterms:bibliographicCitation "Dalia Quiros-Moran, Guide to Afro-Cuban Herbalism (2009)."@en ;
+    dcterms:bibliographicCitation "Quiros-Moran, Dalia. Guide to Afro-Cuban Herbalism. 2009."@en ;
     dcterms:creator "Dalia Quiros-Moran" ;
     dcterms:title "Guide to Afro-Cuban Herbalism" ;
     dcterms:date "2009"^^xsd:gYear ;
@@ -162,8 +162,8 @@ iroko:Specimen33214377
 
 iroko:Verger_Ewe_Iroko
     a dcterms:BibliographicResource ;
-    skos:prefLabel "Verger, Ewé: The Use of Plants in Yoruba Society (1995) — Iroko entry"@en ;
-    dcterms:bibliographicCitation "Pierre Fatumbi Verger, Ewé: The Use of Plants in Yoruba Society (1995), English edition — Milicia excelsa / Iroko entry."@en ;
+    skos:prefLabel "Verger, Ewé (1995) — Iroko entry"@en ;
+    dcterms:bibliographicCitation "Verger, Pierre Fatumbi. Ewé: The Use of Plants in Yoruba Society. 1995. [Milicia excelsa / Iroko entry]"@en ;
     dcterms:creator "Pierre Fatumbi Verger" ;
     dcterms:title "Ewé: The Use of Plants in Yoruba Society" ;
     dcterms:date "1995"^^xsd:gYear ;
