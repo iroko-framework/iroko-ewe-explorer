@@ -22,8 +22,8 @@ iroko:Plant0001
     skos:altlabel "La Ceiba"@es
 
     # Lucumí (use private BCP 47 tags)
-    skos:altLabel "Atori A"@yo-x-lucumi ;
-    skos:altLabel "Atori B"@yo-x-lucumi-variantA ;
+    skos:altLabel "Atori A"@yo ;
+    skos:altLabel "Atori B"@yo-x-lucumi ;
 
     # Method note: list is alphabetical, not asserting primacy
     iroko:nameListMethod "alphabetical" ;
