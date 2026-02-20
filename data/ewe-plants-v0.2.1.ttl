@@ -13,7 +13,7 @@ iroko:Plant0001
     a iroko:Plant ;
 
     dcterms:identifier "Plant0001" ;
-    dwc:scientificName "Fictitia africana" ;
+    dwc:scientificName "Fictitia africana A" ;
 
     # Naming (multilingual / multi-tradition)
     skos:altLabel "Àjàgẹ̀dẹ̀"@yo ;
