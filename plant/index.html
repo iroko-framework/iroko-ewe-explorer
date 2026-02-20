@@ -489,25 +489,28 @@
           ${laAlt ? `<div style="opacity:.85;"><strong>Latin:</strong> ${laAlt}</div>` : ""}
 
           <div style="margin-top:8px; opacity:.85;">
+            <strong>Name list method:</strong> ${p.nameListMethod || "—"}
+          </div>
+
+          <div style="margin-top:6px;">
+            <strong>Name collision:</strong> ${p.collisionFlag ? p.collisionFlag : "—"}
+            ${collisionHtml ? `<ul style="margin-top:6px;">${collisionHtml}</ul>` : ""}
+          </div>
+
+          <div style="margin-top:8px; opacity:.85;">
             <strong>Access:</strong> ${access}<br>
             <strong>Medicinal:</strong> ${med}<br>
             <strong>Ritual:</strong> ${rit}
           </div>
 
-          <div style="margin-top:8px; opacity:.85;">
-            <strong>Name list method:</strong> ${p.nameListMethod || "—"}<br>
-            <strong>Source:</strong> ${source}<br>
-            <strong>Links:</strong> ${linkHtml}
-          </div>
-
-          <div style="margin-top:10px;">
-            <strong>Name collision:</strong> ${p.collisionFlag ? p.collisionFlag : "—"}
-            ${collisionHtml ? `<ul style="margin-top:6px;">${collisionHtml}</ul>` : ""}
-          </div>
-
-          <div style="margin-top:10px;">
+          <div style="margin-top:6px;">
             <strong>Ritual context note:</strong>
             ${ritualHtml ? `<ul style="margin-top:6px;">${ritualHtml}</ul>` : " —"}
+          </div>
+
+          <div style="margin-top:8px; opacity:.85;">
+            <strong>Source:</strong> ${source}<br>
+            <strong>Links:</strong> ${linkHtml}
           </div>
 
           <div style="opacity:.65; font-size:.9rem; margin-top:8px;">${p.uri}</div>
