@@ -4,6 +4,33 @@
 @prefix dwc: <http://rs.tdwg.org/dwc/terms/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+#################################################################
+# Bibliography Nodes (reusable)
+#################################################################
+
+iroko:VergerEwe_1995_en
+    a dcterms:BibliographicResource ;
+    skos:prefLabel "Verger, Ewé: The Use of Plants in Yoruba Society (1995), English ed."@en ;
+    dcterms:bibliographicCitation "Pierre Fatumbi Verger, Ewé: The Use of Plants in Yoruba Society (1995), English edition."@en ;
+    dcterms:creator "Pierre Fatumbi Verger" ;
+    dcterms:title "Ewé: The Use of Plants in Yoruba Society" ;
+    dcterms:date "1995"^^xsd:gYear ;
+    dcterms:language "en" ;
+    dcterms:type "book" ;
+.
+
+iroko:QuirosMoran_2009
+    a dcterms:BibliographicResource ;
+    skos:prefLabel "Quiros-Moran, Guide to Afro-Cuban Herbalism (2009)"@en ;
+    dcterms:bibliographicCitation "Dalia Quiros-Moran, Guide to Afro-Cuban Herbalism (2009)."@en ;
+    dcterms:creator "Dalia Quiros-Moran" ;
+    dcterms:title "Guide to Afro-Cuban Herbalism" ;
+    dcterms:date "2009"^^xsd:gYear ;
+    dcterms:language "en" ;
+    dcterms:type "book" ;
+.
 
 #################################################################
 # Plant Node
@@ -16,13 +43,15 @@ iroko:Plant0001
     dwc:scientificName "Fictitia africana A" ;
 
     # Naming (multilingual / multi-tradition)
-    skos:altLabel "Àjàgẹ̀dẹ̀"@yo ;
+    skos:prefLabel "Àjàgẹ̀dẹ̀"@yo ;    
+    rdfs:label "Fictitia africana A"@la ;
+    
     skos:altLabel "Ajagede"@yo ;
     skos:altLabel "Fictitious plant"@en ;
     skos:altLabel "La Ceiba"@es ;
 
     # Lucumí (use private BCP 47 tags)
-    skos:altLabel "Atori A"@yo ;
+    skos:altLabel "Atori A"@yo-x-lucumi ;
     skos:altLabel "Atori B"@yo-x-lucumi ;
 
     # Method note: list is alphabetical, not asserting primacy
@@ -41,10 +70,9 @@ iroko:Plant0001
     iroko:ritualContextNote
         "This is considered one of the most sacred trees in the Afro-Atlantic world."@en ;
 
-    # Sources: allow multiple statements
-    dcterms:source "Pierre Fatumbi Verger, Ewé: The Use of Plants in Yoruba Society (1995), English edition." ;
-
-    dcterms:source "Dalia Quiros-Moran, Guide to Afro-Cuban Herbalism (2009)." ;
+    # Sources: allow multiple statements (bib nodes)
+        dcterms:source iroko:VergerEwe_1995_en ;
+        dcterms:source iroko:QuirosMoran_2009 ;
 
     # External reference (can be used for display)
     dcterms:relation <https://sernecportal.org/portal/collections/individual/index.php?occid=33214371&clid=0> ;
@@ -101,9 +129,9 @@ iroko:Plant0002
     iroko:ritualContextNote
         "2) This is considered one of the most sacred trees in the Afro-Atlantic world."@en ;
 
-    # Sources: allow multiple statements
-    dcterms:source "Pierre Fatumbi Verger, Ewé: The Use of Plants in Yoruba Society (1995), English edition." ;
-    dcterms:source "Dalia Quiros-Moran, Guide to Afro-Cuban Herbalism (2009)." ;
+    # Sources: allow multiple statements (bib nodes)
+        dcterms:source iroko:VergerEwe_1995_en ;
+        dcterms:source iroko:QuirosMoran_2009 ;
 
     # External reference (can be used for display)
     dcterms:relation <https://sernecportal.org/portal/collections/individual/index.php?occid=33214371&clid=0> ;
