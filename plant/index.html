@@ -343,7 +343,6 @@
             sci: null,
             altByLang: {},
             prefByLang: {},
-            synonyms: [],
 
             collisionFlag: null,
             collisionNoteByLang: {},
@@ -363,7 +362,6 @@
 
         if (p === DCT_ID && o.termType === "Literal") rec.id = o.value;
         if (p === DWC_SCI && o.termType === "Literal") rec.sci = o.value;
-        if (p === DWC_SCI_SYN && o.termType === "Literal") rec.synonyms.push(o.value);
 
         if (p === SKOS_ALT && o.termType === "Literal") {
           const lang = (o.language || "und").toLowerCase();
@@ -425,14 +423,14 @@
       for (const p of plants) {
         const yo = (p.altByLang["yo"] || []).concat(p.prefByLang?.["yo"] || []).filter((v,i,a)=>a.indexOf(v)===i).join("; ") || "—";
         const enAlt = (p.altByLang["en"] || []).join("; ") || "—";
-        const esAlt = (p.altByLang["es"] || p.altByLang["es-cu"] || []).join("; ");
-        const esCuAlt = (p.altByLang["es-cu"] || []).join("; ");
-        const ptAlt = (p.altByLang["pt"] || []).join("; ");
-        const frAlt = (p.altByLang["fr"] || []).join("; ");
-        const htAlt = (p.altByLang["ht"] || []).join("; ");
         const lucumiAlt = (p.altByLang["yo-x-lucumi"] || []).join("; ");
-        const laAlt = (p.altByLang["la"] || []).join("; ");
-        const synHtml = p.synonyms.length ? p.synonyms.join("; ") : null;
+        const esCuAlt = (p.altByLang["es-cu"] || []).join("; ");
+        const esAlt = (p.altByLang["es"] || []).filter(v => !esCuAlt.includes(v)).join("; ");
+        const htAlt = (p.altByLang["ht"] || []).join("; ");
+        const frAlt = (p.altByLang["fr"] || []).join("; ");
+        const ptAlt = (p.altByLang["pt"] || []).join("; ");
+        // Latin altLabels are scientific synonyms per data model
+        const synHtml = (p.altByLang["la"] || []).join("; ") || null;
 
         // Resolve named-node sources via conceptLabels or dcterms:bibliographicCitation
         const DCT_BIB = "http://purl.org/dc/terms/bibliographicCitation";
@@ -482,7 +480,7 @@
             <div style="font-weight:700;">${p.sci || "No scientific name"}</div>
             <div style="opacity:.75; font-size:.92rem;">${p.id || p.uri.split("/").pop()}</div>
           </div>
-          ${synHtml ? `<div style="opacity:.7; font-size:.9rem; font-style:italic; margin-top:2px;">Syn: ${synHtml}</div>` : ""}
+          ${synHtml ? `<div style="opacity:.7; font-size:.9rem; font-style:italic; margin-top:2px;"><strong>Syn:</strong> ${synHtml}</div>` : ""}
 
           <div style="margin-top:6px; opacity:.9;"><strong>Yorùbá:</strong> ${yo}</div>
           <div style="opacity:.85;"><strong>English:</strong> ${enAlt}</div>
