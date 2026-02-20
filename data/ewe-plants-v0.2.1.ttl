@@ -16,7 +16,8 @@ iroko:Plant0001
     skos:altLabel "Àjàgẹ̀dẹ̀"@yo ;
     skos:altLabel "Ajagede"@yo ;
     skos:altLabel "Fictitious plant"@en ;
-    skos:altlabel "Atori"@luq ;
+    skos:altlabel "Atori A"@luq ;
+    skos:altlabel "Atori B"@x-lucumi ;
     iroko:nameListMethod "alphabetical" ;
     iroko:nameCollisionFlag "true"^^xsd:boolean ;
     iroko:nameCollisionNote "Shares the vernacular name “Iròkò” with Ceiba pentandra in some ritual and popular contexts; distinguished here by Verger attestation."@en ;
