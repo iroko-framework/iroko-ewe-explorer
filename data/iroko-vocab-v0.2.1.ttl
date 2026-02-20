@@ -1,0 +1,15 @@
+@prefix iroko: <https://iroko-framework.org/ewe/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+iroko:Public-Unrestricted a skos:Concept ;
+  skos:prefLabel "Public-Unrestricted"@en ;
+  skos:prefLabel "Público sin restricciones"@es ;
+  skos:prefLabel "Público sem restrições"@pt ;
+  skos:prefLabel "Public sans restriction"@fr ;
+  skos:prefLabel "Gbogbo ènìyàn lè wọlé"@yo .
+
+iroko:AntiInflammatory a skos:Concept ;
+  skos:prefLabel "Anti-Inflammatory"@en .
+
+iroko:AncestralInvocation a skos:Concept ;
+  skos:prefLabel "Ancestral Invocation"@en .
