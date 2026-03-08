@@ -3,15 +3,175 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AROMA AMARILLA U OLOROSA — Ewé Database</title>
-  <link rel="stylesheet" href="../ewe-style.css">
+  <title>AROMA AMARILLA U OLOROSA · Acacia farnesiana — Ewé Database</title>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+  --ink:         #1c2118;
+  --ink-mid:     #3d4a36;
+  --ink-soft:    #6b7a62;
+  --paper:       #f7f4ed;
+  --paper-warm:  #ede9df;
+  --paper-deep:  #e4dfd2;
+  --rule:        rgba(28,33,24,.12);
+  --rule-strong: rgba(28,33,24,.25);
+  --green:       #2e4a1e;
+  --green-mid:   #4a7035;
+  --green-light: #e8f0e2;
+  --terracotta:  #8b3a1a;
+  --gold:        #a07830;
+  --gold-light:  #f5edd8;
+  --purple:      #5c3d8f;
+  --navy:        #1a4a5e;
+  --mono: 'DM Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+  --serif:'Cormorant Garamond', Georgia, serif;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-weight:300;line-height:1.65;}
+a{color:var(--green);text-decoration:none;}
+a:hover{color:var(--terracotta);}
+
+.page-wrap{max-width:1080px;margin:0 auto;padding:0 2rem;}
+
+/* ── Top bar ── */
+.top-bar{border-bottom:1px solid var(--rule);padding:.7rem 2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;}
+.top-bar-id{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);}
+.top-bar-links{display:flex;gap:1.5rem;}
+.top-bar-links a{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);}
+.top-bar-links a:hover{color:var(--green);}
+
+/* ── Lang toggle ── */
+.lang-toggle{display:flex;gap:0;border:1px solid var(--rule-strong);border-radius:3px;overflow:hidden;width:fit-content;}
+.lang-btn{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.3em .9em;background:var(--paper);color:var(--ink-soft);border:none;border-right:1px solid var(--rule-strong);cursor:pointer;transition:all .12s;user-select:none;}
+.lang-btn:last-child{border-right:none;}
+.lang-btn:hover{background:var(--paper-warm);color:var(--ink);}
+.lang-btn.active{background:var(--green);color:#fff;}
+.lang-btn.disabled{opacity:.35;pointer-events:none;}
+
+/* ── Breadcrumb ── */
+.breadcrumb{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;color:var(--ink-soft);padding:1rem 0 0;}
+.breadcrumb a{color:var(--ink-soft);}
+.breadcrumb a:hover{color:var(--green);}
+.breadcrumb span{margin:0 .4em;opacity:.5;}
+
+/* ── Explorer hero (index) ── */
+.explorer-hero{padding:3rem 0 2.5rem;border-bottom:2px solid var(--ink);}
+.hero-inner{display:grid;grid-template-columns:auto 1fr auto;gap:2.5rem;align-items:start;}
+.hero-logo img{width:88px;height:auto;display:block;}
+.explorer-eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--green-mid);margin-bottom:.5rem;}
+.explorer-title{font-family:var(--serif);font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:600;color:var(--green);line-height:1.05;}
+.explorer-title em{font-style:italic;color:var(--terracotta);}
+.explorer-sub{font-size:.88rem;color:var(--ink-mid);margin-top:.75rem;max-width:58ch;line-height:1.65;}
+
+/* About block */
+.about-block{border-left:3px solid var(--green);padding:.85rem 1.1rem;background:var(--green-light);border-radius:0 3px 3px 0;margin:2rem 0 0;}
+.about-block-title{font-family:var(--mono);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--green);margin-bottom:.5rem;}
+.about-block p{font-size:.84rem;color:var(--ink-mid);line-height:1.65;}
+
+/* ── Search + filter ── */
+.toolbar{margin:2rem 0 1rem;display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;}
+.search-input{flex:1;min-width:220px;font-family:var(--sans);font-size:.88rem;padding:.5em 1em;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);color:var(--ink);outline:none;transition:border-color .15s;}
+.search-input:focus{border-color:var(--green);}
+.search-count{font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);white-space:nowrap;}
+.filter-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.filter-pill{font-family:var(--mono);font-size:.6rem;letter-spacing:.07em;text-transform:uppercase;padding:.22em .75em;border-radius:2px;border:1px solid var(--rule-strong);background:var(--paper);color:var(--ink-soft);cursor:pointer;transition:all .12s;user-select:none;}
+.filter-pill:hover{background:var(--paper-warm);color:var(--ink);}
+.filter-pill.active{background:var(--green);color:#fff;border-color:var(--green);}
+
+/* ── Plant grid (index) ── */
+.plant-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;border:1px solid var(--rule-strong);border-radius:3px;overflow:hidden;background:var(--rule-strong);margin-bottom:2rem;}
+.plant-card{background:var(--paper);padding:1.2rem 1.4rem;transition:background .12s;display:flex;flex-direction:column;gap:.3rem;cursor:pointer;}
+.plant-card:hover{background:var(--paper-warm);}
+.plant-card.hidden{display:none;}
+.card-id{font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;color:var(--ink-soft);text-transform:uppercase;}
+.card-pref{font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--green);line-height:1.15;}
+.card-sci{font-size:.76rem;font-style:italic;color:var(--ink-soft);}
+/* Name rows on card — always shown, stacked */
+.card-names{display:flex;flex-direction:column;gap:.1rem;margin-top:.25rem;}
+.card-name-row{display:grid;grid-template-columns:28px 1fr;gap:.4rem;align-items:baseline;}
+.card-name-lang{font-family:var(--mono);font-size:.52rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);}
+.card-name-val{font-size:.78rem;color:var(--ink-mid);}
+.card-foot{margin-top:.5rem;display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;}
+
+/* ── Access badges ── */
+.access-badge{display:inline-block;font-family:var(--mono);font-size:.58rem;letter-spacing:.06em;padding:.12em .55em;border-radius:2px;white-space:nowrap;}
+.access-badge-lg{font-size:.72rem;padding:.2em .7em;}
+.access-public   {background:var(--green-light);color:var(--green);}
+.access-community{background:var(--gold-light);color:var(--gold);}
+.access-initiated{background:#fde8e0;color:var(--terracotta);}
+.access-none     {background:#2a2a2a;color:#fff;}
+
+/* ── Plant detail page ── */
+.plant-header{padding:2.5rem 0 2rem;border-bottom:2px solid var(--ink);}
+.plant-header-inner{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:start;}
+.plant-pref-large{font-family:var(--serif);font-size:clamp(2rem,4vw,3rem);font-weight:600;color:var(--green);line-height:1.05;}
+.plant-sci-large{font-size:1rem;font-style:italic;color:var(--ink-soft);margin-top:.3rem;}
+.plant-id-label{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:.5rem;}
+.plant-header-meta{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:.85rem;}
+
+/* Detail grid */
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin:2.5rem 0;}
+.detail-section-title{font-family:var(--mono);font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);padding-bottom:.5rem;border-bottom:1px solid var(--rule-strong);margin-bottom:1.2rem;}
+.detail-row{margin-bottom:1rem;}
+.detail-label{font-family:var(--mono);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.3rem;}
+
+/* Names table — always fully visible */
+.names-table{width:100%;border-collapse:collapse;}
+.names-table tr{border-bottom:1px solid var(--rule);}
+.names-table tr:last-child{border-bottom:none;}
+.names-table td{padding:.55rem 0;vertical-align:top;}
+.names-table td:first-child{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap;padding-right:1rem;width:130px;padding-top:.65rem;}
+.names-table .name-entry{font-size:.9rem;color:var(--ink-mid);line-height:1.5;}
+.names-table .name-entry:first-child{font-size:.98rem;color:var(--ink);font-weight:400;}
+.names-table .name-empty{font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);font-style:italic;}
+
+/* Gated row */
+.gated-cell{display:inline-flex;align-items:center;gap:.6rem;}
+
+/* Use value pill */
+.use-value{display:inline-block;font-size:.85rem;font-weight:400;color:var(--ink);background:var(--paper-warm);border:1px solid var(--rule-strong);padding:.2em .75em;border-radius:2px;}
+
+/* Tag cloud */
+.tag-cloud{display:flex;flex-wrap:wrap;gap:.35rem;}
+.tag-pill{font-family:var(--sans);font-size:.73rem;background:var(--paper-deep);color:var(--ink-mid);padding:.18em .65em;border-radius:2px;border:1px solid var(--rule-strong);line-height:1.4;}
+.tag-pill .country-prefix{color:var(--ink-soft);font-size:.68rem;margin-right:.3em;}
+
+/* Collision */
+.collision-notice{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;color:var(--gold);background:var(--gold-light);border:1px solid rgba(160,120,48,.25);padding:.18em .65em;border-radius:2px;}
+
+/* Ritual notes block */
+.notes-block{background:var(--paper-warm);border:1px solid var(--rule-strong);border-radius:3px;padding:.85rem 1rem;font-size:.87rem;color:var(--ink-mid);line-height:1.65;}
+
+/* Nav */
+.plant-nav{display:flex;justify-content:space-between;align-items:center;padding:1.5rem 0;border-top:1px solid var(--rule);margin-top:2rem;}
+.plant-nav a{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);border:1px solid var(--rule-strong);padding:.3em .9em;border-radius:2px;transition:all .12s;}
+.plant-nav a:hover{background:var(--paper-warm);color:var(--ink);}
+
+/* Footer */
+.site-footer{border-top:1px solid var(--rule);padding:1.5rem 0 2.5rem;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;align-items:center;margin-top:2rem;}
+.footer-left{font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;color:var(--ink-soft);line-height:1.7;}
+.footer-links{display:flex;gap:1.5rem;}
+.footer-links a{font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;color:var(--ink-soft);}
+.footer-links a:hover{color:var(--green);}
+
+@media(max-width:760px){
+  .hero-inner{grid-template-columns:1fr;gap:1rem;}
+  .hero-logo img{width:52px;}
+  .detail-grid{grid-template-columns:1fr;gap:1.5rem;}
+  .plant-grid{grid-template-columns:1fr;}
+  .plant-header-inner{grid-template-columns:1fr;}
+}
+</style>
 </head>
-<body data-lang="en">
+<body>
 
 <div class="top-bar">
   <span class="top-bar-id">Iroko Historical Society · Ewé Database</span>
   <nav class="top-bar-links">
-    <a href="../index.html">All Plants</a>
+    <a href="../index.html" class="ui" data-en="All Plants" data-es="Todas las Plantas" data-fr="Toutes les Plantes" data-yo="Gbogbo Ewé" data-pt="Todas as Plantas">All Plants</a>
     <a href="https://ontology.irokosociety.org">Framework ↗</a>
     <a href="https://www.irokosociety.org">irokosociety.org ↗</a>
   </nav>
@@ -20,128 +180,101 @@
 <div class="page-wrap">
 
   <p class="breadcrumb">
-    <a href="../index.html">Ewé Database</a>
+    <a href="../index.html" class="ui" data-en="All Plants" data-es="Todas las Plantas" data-fr="Toutes les Plantes" data-yo="Gbogbo Ewé" data-pt="Todas as Plantas">All Plants</a>
     <span>/</span>
     Plant0004
   </p>
 
   <header class="plant-header">
-    <div class="plant-header-top">
-      <div class="plant-header-title">
+    <div class="plant-header-inner">
+      <div>
         <div class="plant-pref-large">AROMA AMARILLA U OLOROSA</div>
         <div class="plant-sci-large">Acacia farnesiana</div>
         <div class="plant-id-label">Plant0004 · iroko:EwePlantRecord</div>
+        <div class="plant-header-meta">
+          <span class="access-badge access-public access-badge-lg">Public</span>
+          
+        </div>
       </div>
-      <div class="lang-toggle">
+      <div><div class="lang-toggle">
   <button class="lang-btn" data-lang="en">EN</button>
-  <button class="lang-btn" data-lang="yo">YO</button>
   <button class="lang-btn" data-lang="es">ES</button>
-  <button class="lang-btn disabled" data-lang="pt" title="Brazilian Portuguese names coming soon">PT</button>
-</div>
-    </div>
-    <div class="plant-header-meta">
-      <span class="access-badge access-public access-badge-lg">Public</span>
-      
+  <button class="lang-btn" data-lang="fr">FR</button>
+  <button class="lang-btn" data-lang="yo">YO</button>
+  <button class="lang-btn" data-lang="pt">PT</button>
+</div></div>
     </div>
   </header>
 
   <div class="detail-grid">
 
-    <div class="detail-section">
-      <div class="detail-section-title">Names by Language</div>
-      <div class="detail-row">
-  <div class="detail-label">English</div>
-  <div class="name-block" data-lang="en">
-    <ul class="name-list"><li>SWEET ACACIA</li></ul>
-  </div>
-</div>
-      <div class="detail-row">
-  <div class="detail-label">Yoruba</div>
-  <div class="name-block" data-lang="yo">
-    <ul class="name-list"><li>Bọ́nní</li>
-<li>Bànì</li></ul>
-  </div>
-</div>
-      <div class="detail-row">
-  <div class="detail-label">Spanish / Cuban</div>
-  <div class="name-block" data-lang="es">
-    <ul class="name-list"><li>Aroma</li></ul>
-  </div>
-</div>
-      <div class="detail-row">
-  <div class="detail-label">Brazilian Portuguese</div>
-  <div class="name-block" data-lang="pt">
-    <div style="font-family:var(--mono);font-size:.7rem;color:var(--ink-soft);font-style:italic;">
-      Portuguese names from the forthcoming Brazilian manuscript. Not yet in dataset.
-    </div>
-  </div>
-</div>
-      <div class="detail-row">
-  <div class="detail-label">Lucumí Names</div>
-  <div class="detail-value"><span class="access-badge access-community access-badge-lg">Community Only</span></div>
-</div>
+    <div>
+      <div class="detail-section-title ui" data-en="Names by Language" data-es="Nombres por Idioma" data-fr="Noms par Langue" data-yo="Àwọn Orúkọ" data-pt="Nomes por Idioma">Names by Language</div>
+      <table class="names-table">
+  <tr>
+    <td class="ui" data-en="English" data-es="Inglés" data-fr="Anglais" data-yo="Èdè Gẹ̀ẹ́sì" data-pt="Inglês">English</td>
+    <td><div class="name-entry">SWEET ACACIA</div></td>
+  </tr>
+  <tr>
+    <td class="ui" data-en="Yoruba" data-es="Yoruba" data-fr="Yoruba" data-yo="Èdè Yorùbá" data-pt="Yoruba">Yoruba</td>
+    <td><div class="name-entry">Bọ́nní</div><div class="name-entry">Bànì</div></td>
+  </tr>
+  <tr>
+    <td class="ui" data-en="Spanish / Cuban" data-es="Español / Cubano" data-fr="Espagnol / Cubain" data-yo="Èdè Spéénì / Kúbà" data-pt="Espanhol / Cubano">Spanish / Cuban</td>
+    <td><div class="name-entry">Aroma</div></td>
+  </tr>
+  <tr>
+    <td class="ui" data-en="Brazilian Portuguese" data-es="Portugués Brasileño" data-fr="Portugais Brésilien" data-yo="Èdè Potogí" data-pt="Português Brasileiro">Brazilian Portuguese</td>
+    <td><span class="name-empty ui" data-en="Brazilian Portuguese names pending — forthcoming manuscript." data-es="Nombres en portugués pendientes — manuscrito en preparación." data-fr="Noms en portugais en attente — manuscrit à venir." data-yo="Àwọn orúkọ Potogí ń dìde — ìwé àfọwọkọ tí ń bọ̀." data-pt="Nomes em português pendentes — manuscrito vindouro.">Brazilian Portuguese names pending — forthcoming manuscript.</span></td>
+  </tr>
+  <tr>
+    <td class="ui" data-en="Lucumí Names" data-es="Nombres Lucumí" data-fr="Noms Lucumí" data-yo="Àwọn Orúkọ Lucumí" data-pt="Nomes Lucumí">Lucumí Names</td>
+    <td><div class="gated-cell"><span class="access-badge access-community access-badge-lg">Community Only</span></div></td>
+  </tr>
+</table>
     </div>
 
-    <div class="detail-section">
-      <div class="detail-section-title">Regional & Vernacular Names</div>
-      <div class="detail-row">
-  <div class="detail-label">Other Regional Names</div>
-  <div class="tag-cloud"><span class="tag-pill">Gren&#x27;n l&#x27;Eglise</span>
-<span class="tag-pill">Lyan&#x27;n Réglisse</span>
-<span class="tag-pill">Cuji</span>
-<span class="tag-pill">Réglisse</span>
-<span class="tag-pill">Cachito de aroma</span>
-<span class="tag-pill"><span class="country-prefix">Colombia ·</span>Aromo</span>
-<span class="tag-pill">Costa Rica</span>
-<span class="tag-pill">Philippines</span>
-<span class="tag-pill">Graine-Réglisse Mexico</span>
-<span class="tag-pill">Espino blanco</span>
-<span class="tag-pill"><span class="country-prefix">Uruguay ·</span>Espinillo Lyan&#x27;n L&#x27;Église</span>
-<span class="tag-pill">Nicaragua</span>
-<span class="tag-pill">Aroma</span>
-<span class="tag-pill">Argentina</span>
-<span class="tag-pill">Peru</span>
-<span class="tag-pill">Sunsumie</span></div>
-</div>
+    <div>
+      <div class="detail-section-title ui" data-en="Regional &amp; Vernacular Names" data-es="Nombres Regionales y Vernáculos" data-fr="Noms Régionaux et Vernaculaires" data-yo="Àwọn Orúkọ Ẹkùn" data-pt="Nomes Regionais e Vernáculos">Regional &amp; Vernacular Names</div>
+      <div class="detail-label ui" data-en="Other Regional Names" data-es="Otros Nombres Regionales" data-fr="Autres Noms Régionaux" data-yo="Àwọn Orúkọ Mìíràn" data-pt="Outros Nomes Regionais">Other Regional Names</div>
+      <div style="margin-top:.4rem;"><div class="tag-cloud"><span class="tag-pill">Gren&#x27;n l&#x27;Eglise</span><span class="tag-pill">Lyan&#x27;n Réglisse</span><span class="tag-pill">Cuji</span><span class="tag-pill">Réglisse</span><span class="tag-pill">Cachito de aroma</span><span class="tag-pill"><span class="country-prefix">Colombia ·</span>Aromo</span><span class="tag-pill">Costa Rica</span><span class="tag-pill">Philippines</span><span class="tag-pill">Graine-Réglisse Mexico</span><span class="tag-pill">Espino blanco</span><span class="tag-pill"><span class="country-prefix">Uruguay ·</span>Espinillo Lyan&#x27;n L&#x27;Église</span><span class="tag-pill">Nicaragua</span><span class="tag-pill">Aroma</span><span class="tag-pill">Argentina</span><span class="tag-pill">Peru</span><span class="tag-pill">Sunsumie</span></div></div>
     </div>
 
   </div>
 
   <div class="detail-grid">
 
-    <div class="detail-section">
-      <div class="detail-section-title">Sacred Knowledge</div>
+    <div>
+      <div class="detail-section-title ui" data-en="Sacred Knowledge" data-es="Conocimiento Sagrado" data-fr="Savoir Sacré" data-yo="Ìmọ̀ Mímọ́" data-pt="Conhecimento Sagrado">Sacred Knowledge</div>
       <div class="detail-row">
-  <div class="detail-label">Ritual Use</div>
-  <div class="detail-value"><span class="use-value">Purification &amp; Cleansing</span></div>
-</div>
-      <div class="detail-row">
-  <div class="detail-label">Ritual Notes</div>
-  <div class="detail-value"></div>
-</div>
-    </div>
-
-    <div class="detail-section">
-      <div class="detail-section-title">Classification</div>
-      <div class="detail-row">
-  <div class="detail-label">Medicinal Use</div>
-  <div class="detail-value"><span class="use-value">General Tonic</span></div>
-</div>
-      <div class="detail-row">
-        <div class="detail-label">Scientific Name</div>
-        <div class="detail-value" style="font-style:italic;">Acacia farnesiana</div>
+        <div class="detail-label ui" data-en="Ritual Use" data-es="Uso Ritual" data-fr="Usage Rituel" data-yo="Lílo Àṣà" data-pt="Uso Ritual">Ritual Use</div>
+        <div style="margin-top:.3rem;"><span class="use-value">Purification &amp; Cleansing</span></div>
       </div>
       <div class="detail-row">
-        <div class="detail-label">Iroko URI</div>
-        <div class="detail-value">
-          <a href="https://ontology.irokosociety.org/data/ewe/Plant0004" style="font-family:var(--mono);font-size:.72rem;word-break:break-all;">
-            https://ontology.irokosociety.org/data/ewe/Plant0004
-          </a>
+        <div class="detail-label ui" data-en="Ritual Notes" data-es="Notas Rituales" data-fr="Notes Rituelles" data-yo="Àwọn Àkọsílẹ̀ Àṣà" data-pt="Notas Rituais">Ritual Notes</div>
+        <div style="margin-top:.3rem;"><span class="name-empty ui" data-en="None recorded" data-es="Ninguno registrado" data-fr="Aucun enregistré" data-yo="Kò sí tí a kọ" data-pt="Nenhum registrado">None recorded</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="detail-section-title ui" data-en="Classification" data-es="Clasificación" data-fr="Classification" data-yo="Ìpín" data-pt="Classificação">Classification</div>
+      <div class="detail-row">
+        <div class="detail-label ui" data-en="Medicinal Use" data-es="Uso Medicinal" data-fr="Usage Médicinal" data-yo="Lílo Ìwòsàn" data-pt="Uso Medicinal">Medicinal Use</div>
+        <div style="margin-top:.3rem;"><span class="use-value">General Tonic</span></div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label ui" data-en="Scientific Name" data-es="Nombre Científico" data-fr="Nom Scientifique" data-yo="Orúkọ Sáyẹ́ǹsì" data-pt="Nome Científico">Scientific Name</div>
+        <div style="margin-top:.3rem;font-style:italic;font-size:.9rem;color:var(--ink-mid);">Acacia farnesiana</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label ui" data-en="Iroko URI" data-es="URI de Iroko" data-fr="URI Iroko" data-yo="Iroko URI" data-pt="URI Iroko">Iroko URI</div>
+        <div style="margin-top:.3rem;">
+          <a href="https://ontology.irokosociety.org/data/ewe/Plant0004" style="font-family:var(--mono);font-size:.72rem;word-break:break-all;">https://ontology.irokosociety.org/data/ewe/Plant0004</a>
         </div>
       </div>
       <div class="detail-row">
-        <div class="detail-label">Vocabulary</div>
-        <div class="detail-value">
+        <div class="detail-label ui" data-en="Vocabulary" data-es="Vocabulario" data-fr="Vocabulaire" data-yo="Àwọn Ọ̀rọ̀" data-pt="Vocabulário">Vocabulary</div>
+        <div style="margin-top:.3rem;">
           <a href="https://ontology.irokosociety.org/vocab/iroko-ewe.html"
              style="font-family:var(--mono);font-size:.72rem;">iroko-ewe ↗</a>
         </div>
@@ -150,16 +283,12 @@
 
   </div>
 
-  <div class="plant-nav">
-    <a href="Plant0003.html">← Plant0003</a>
-    <a href="../index.html">All Plants</a>
-    <a href="Plant0005.html">Plant0005 →</a>
-  </div>
+  <div class="plant-nav"><a href="Plant0003.html">← <span class="ui" data-en="Previous" data-es="Anterior" data-fr="Précédent" data-yo="Tẹ́lẹ̀" data-pt="Anterior">Previous</span> · Plant0003</a><a href="../index.html" class="ui" data-en="All Plants" data-es="Todas las Plantas" data-fr="Toutes les Plantes" data-yo="Gbogbo Ewé" data-pt="Todas as Plantas">All Plants</a><a href="Plant0005.html">Plant0005 · <span class="ui" data-en="Next" data-es="Siguiente" data-fr="Suivant" data-yo="Tókàn" data-pt="Próximo">Next</span> →</a></div>
 
 <footer class="site-footer">
   <div class="footer-left">
-    Iroko Historical Society · Ewé Database<br>
-    Postcustodial Digital Archives for Afro-Atlantic Cultural Materials<br>
+    <span class="ui" data-en="Iroko Historical Society · Ewé Database" data-es="Sociedad Histórica Iroko · Base de Datos Ewé" data-fr="Société Historique Iroko · Base de Données Ewé" data-yo="Àwùjọ Ìtàn Iroko · Àkójọpọ̀ Ewé" data-pt="Sociedade Histórica Iroko · Base de Dados Ewé">Iroko Historical Society · Ewé Database</span><br>
+    <span class="ui" data-en="Postcustodial Digital Archives for Afro-Atlantic Cultural Materials" data-es="Archivos Digitales Postcustodiales para Materiales Culturales Afroatlánticos" data-fr="Archives Numériques Post-custodiales pour Matériaux Culturels Afro-atlantiques" data-yo="Àwọn Àkọsílẹ̀ Ìròyìn Àfikà-Adágún-Atlantiki" data-pt="Arquivos Digitais Pós-custodiais para Materiais Culturais Afro-Atlânticos">Postcustodial Digital Archives for Afro-Atlantic Cultural Materials</span><br>
     Source: Pierre Fatumbi Verger, <em>Ewé: The Use of Plants in Yoruba Society</em> (1995) ·
     Dalia Quiros-Moran, <em>Guide to Afro-Cuban Herbalism</em><br>
     Vocabulary: <a href="https://ontology.irokosociety.org">Iroko Framework v2.0.0</a> · License: CC0 1.0
@@ -167,7 +296,7 @@
   <div class="footer-links">
     <a href="https://www.irokosociety.org">irokosociety.org</a>
     <a href="https://ontology.irokosociety.org">Vocabulary</a>
-    <a href="../index.html">All Plants</a>
+    <a href="../index.html" class="ui" data-en="All Plants" data-es="Todas las Plantas" data-fr="Toutes les Plantes" data-yo="Gbogbo Ewé" data-pt="Todas as Plantas">All Plants</a>
   </div>
 </footer>
 
@@ -175,19 +304,36 @@
 
 <script>
 (function(){
-  var stored = localStorage.getItem('ewe-lang') || 'en';
-  document.body.setAttribute('data-lang', stored);
+  var LANGS = ['en','es','fr','yo','pt'];
+  var stored = (localStorage.getItem('ewe-ui-lang') || 'en');
+  if(LANGS.indexOf(stored) < 0) stored = 'en';
+
+  function applyLang(lang){
+    document.body.setAttribute('data-ui-lang', lang);
+    // Update all .ui spans
+    document.querySelectorAll('.ui[data-'+lang+']').forEach(function(el){
+      el.textContent = el.getAttribute('data-'+lang);
+    });
+    // Update search placeholder
+    var si = document.querySelector('.search-input');
+    if(si){
+      var ph = si.getAttribute('data-ph-'+lang);
+      if(ph) si.placeholder = ph;
+    }
+    // Update lang buttons
+    document.querySelectorAll('.lang-btn').forEach(function(b){
+      b.classList.toggle('active', b.dataset.lang === lang);
+    });
+    localStorage.setItem('ewe-ui-lang', lang);
+  }
+
   document.querySelectorAll('.lang-btn').forEach(function(btn){
-    if(btn.dataset.lang === stored) btn.classList.add('active');
     btn.addEventListener('click', function(){
-      var lang = this.dataset.lang;
-      if(this.classList.contains('disabled')) return;
-      document.body.setAttribute('data-lang', lang);
-      localStorage.setItem('ewe-lang', lang);
-      document.querySelectorAll('.lang-btn').forEach(function(b){ b.classList.remove('active'); });
-      this.classList.add('active');
-    }.bind(btn));
+      if(!this.classList.contains('disabled')) applyLang(this.dataset.lang);
+    });
   });
+
+  applyLang(stored);
 })();
 </script>
 </body>
