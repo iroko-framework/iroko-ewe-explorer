@@ -55,6 +55,7 @@ UI = {
                               "pt":"Nomes em português pendentes — manuscrito vindouro."},
     "regional_vernacular":   {"en":"Regional & Vernacular Names","es":"Nombres Regionales y Vernáculos","fr":"Noms Régionaux et Vernaculaires","yo":"Àwọn Orúkọ Ẹkùn","pt":"Nomes Regionais e Vernáculos"},
     "other_regional":        {"en":"Other Regional Names","es":"Otros Nombres Regionales","fr":"Autres Noms Régionaux","yo":"Àwọn Orúkọ Mìíràn","pt":"Outros Nomes Regionais"},
+    "scientific_synonyms":   {"en":"Scientific Synonyms","es":"Sinónimos Científicos","fr":"Synonymes Scientifiques","yo":"Àwọn Orúkọ Sáyẹ́ǹsì Míràn","pt":"Sinônimos Científicos"},
     "none_recorded":         {"en":"None recorded",      "es":"Ninguno registrado",     "fr":"Aucun enregistré",      "yo":"Kò sí tí a kọ",        "pt":"Nenhum registrado"},
     "sacred_knowledge":      {"en":"Sacred Knowledge",   "es":"Conocimiento Sagrado",   "fr":"Savoir Sacré",          "yo":"Ìmọ̀ Mímọ́",            "pt":"Conhecimento Sagrado"},
     "ritual_use":            {"en":"Ritual Use",         "es":"Uso Ritual",             "fr":"Usage Rituel",          "yo":"Lílo Àṣà",              "pt":"Uso Ritual"},
@@ -117,13 +118,56 @@ def local(uri):
     s = str(uri)
     return s.split("#")[-1] if "#" in s else s.split("/")[-1]
 
+
+# Latin genus suffixes that distinguish true binomials from English two-word names
+import re as _re
+_LATIN_SUFFIXES = ('us','a','ia','ium','is','ix','or','ex','ax','on','ica',
+                   'ana','ata','osa','ula','ella','ina','ens','ans','um')
+_AUTHOR_PATTERN = _re.compile(
+    r'^[A-Z][a-z]+ '                   # Genus (cap + lower)
+    r'(?:'
+    r'[a-z][a-z\-]+'                   # species epithet
+    r'(?:[ ,]+(?:[A-Z][a-z]*\.?|&|\(|\)|L\.|DC\.))*'  # optional author citation
+    r')',
+    _re.ASCII
+)
+_COMMON_ENGLISH_FIRST = {
+    'African','American','Asian','Alligator','Balsam','Barbados','Bengal','Black',
+    'Blue','Brazilian','British','Chinese','Common','Cuban','Eastern','English',
+    'Green','Giant','Golden','Indian','Jamaica','Japanese','Large','Lemon',
+    'Mexican','New','Northern','Panic','Pepper','Queensland','Red','Rose',
+    'Seville','Small','Southern','Spanish','Sweet','Tropical','West','White',
+    'Wild','Worm','Yellow',
+}
+
+def _is_scientific(name):
+    """Heuristic: True if name looks like a botanical Latin binomial (with optional author)."""
+    name = name.strip()
+    parts = name.split()
+    if len(parts) < 2:
+        return False
+    genus = parts[0]
+    # Must start with a single capital then all lowercase
+    if not _re.match(r'^[A-Z][a-z]{2,}$', genus):
+        return False
+    # Exclude known English adjectives/nouns used as common names
+    if genus in _COMMON_ENGLISH_FIRST:
+        return False
+    # Must end with a Latin suffix, or contain parentheses (author citation signals)
+    if any(genus.endswith(s) for s in _LATIN_SUFFIXES):
+        return True
+    # Detect author-cited synonyms: contain ( ) or abbreviations like L., DC., Kunth
+    if _re.search(r'[().]|\bL\.\b|\bKunth\b|\bDC\.\b', name):
+        return True
+    return False
+
 def extract_plants(g):
     plants = []
     for subj in g.subjects(RDF.type, IROKO.EwePlantRecord):
         p = {"uri": str(subj), "id": None, "scientific": None,
              "prefLabel": None,
              "en": [], "yo": [], "es": [], "pt": [],
-             "lucumi": [], "other": [],
+             "lucumi": [], "synonyms": [], "other": [],
              "ritual_use": None, "medicinal_use": None,
              "ritual_notes": None, "access_key": None,
              "name_collision": False}
@@ -146,6 +190,9 @@ def extract_plants(g):
                 if val not in p["es"]:   p["es"].append(val)
             elif lang in ("pt-BR","pt"): p["pt"].append(val)
             elif lang == "x-lucumi":     p["lucumi"].append(val)
+            elif lang is None:
+                if _is_scientific(val):  p["synonyms"].append(val)
+                else:                    p["other"].append(val)
             else:                        p["other"].append(val)
 
         ru = g.value(subj, IROKO.ritualUse)
@@ -424,9 +471,13 @@ def build_index(plants, out_dir):
     ))
 
     about_d = UI["about_body"]
-    about_divs = "\n".join(
-        f'<p class="ui" data-en="{H(about_d["en"])}" data-es="{H(about_d["es"])}" '
-        f'data-fr="{H(about_d["fr"])}" data-yo="{H(about_d["yo"])}" data-pt="{H(about_d["pt"])}">'
+    about_divs = (
+        f'<p class="ui"'
+        f' data-en="{H(about_d["en"])}"'
+        f' data-es="{H(about_d["es"])}"'
+        f' data-fr="{H(about_d["fr"])}"'
+        f' data-yo="{H(about_d["yo"])}"'
+        f' data-pt="{H(about_d["pt"])}">'
         f'{H(about_d["en"])}</p>'
     )
 
@@ -623,7 +674,16 @@ def build_plant(p, prev_id, next_id, out_dir):
   </tr>
 </table>"""
 
-    # ── Regional names ───────────────────────────────────────────────────────
+    # ── Scientific synonyms ───────────────────────────────────────────────────
+    if p["synonyms"]:
+        syn_content = "".join(
+            f'<div class="name-entry" style="font-style:italic;">{H(s)}</div>'
+            for s in sorted(p["synonyms"])
+        )
+    else:
+        syn_content = f'<span class="name-empty ui" {ui_attrs("none_recorded")}>{H(UI["none_recorded"]["en"])}</span>'
+
+    # ── Regional vernacular names ─────────────────────────────────────────────
     def format_pill(name):
         if " – " in name or " - " in name:
             sep = " – " if " – " in name else " - "
@@ -703,8 +763,10 @@ def build_plant(p, prev_id, next_id, out_dir):
 
     <div>
       <div class="detail-section-title ui" {ui_attrs('regional_vernacular')}>Regional &amp; Vernacular Names</div>
-      <div class="detail-label ui" {ui_attrs('other_regional')}>Other Regional Names</div>
-      <div style="margin-top:.4rem;">{other_content}</div>
+      <div class="detail-label ui" {ui_attrs('scientific_synonyms')} style="margin-bottom:.4rem;">Scientific Synonyms</div>
+      <div style="margin-bottom:1.2rem;">{syn_content}</div>
+      <div class="detail-label ui" {ui_attrs('other_regional')} style="margin-bottom:.4rem;">Other Regional Names</div>
+      <div>{other_content}</div>
     </div>
 
   </div>
