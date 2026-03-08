@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRODIGIOSA — Ewé Database</title>
+  <style>
+/* ================================================================
+   Iroko Ewé Explorer — Explorer Stylesheet
+   Extends iroko-style.css design tokens
+   ewe.irokosociety.org
+================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
+
+/* ── Tokens (mirrored from iroko-style.css) ──────────────────── */
+:root {
+  --ink:          #1c2118;
+  --ink-mid:      #3d4a36;
+  --ink-soft:     #6b7a62;
+  --paper:        #f7f4ed;
+  --paper-warm:   #ede9df;
+  --paper-deep:   #e4dfd2;
+  --rule:         rgba(28,33,24,.12);
+  --rule-strong:  rgba(28,33,24,.25);
+  --green:        #2e4a1e;
+  --green-mid:    #4a7035;
+  --green-light:  #e8f0e2;
+  --terracotta:   #8b3a1a;
+  --gold:         #a07830;
+  --gold-light:   #f5edd8;
+  --purple:       #5c3d8f;
+  --navy:         #1a4a5e;
+  --mono:  'DM Mono', monospace;
+  --sans:  'DM Sans', sans-serif;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+}
+
+/* ── Reset ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--sans); font-weight: 300; line-height: 1.65; }
+a { color: var(--green); text-decoration: none; }
+a:hover { color: var(--terracotta); }
+
+/* ── Layout ──────────────────────────────────────────────────── */
+.page-wrap { max-width: 1080px; margin: 0 auto; padding: 0 2rem; }
+
+/* ── Top bar ─────────────────────────────────────────────────── */
+.top-bar { border-bottom: 1px solid var(--rule); padding: .7rem 2rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.top-bar-id { font-family: var(--mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+.top-bar-links { display: flex; gap: 1.5rem; }
+.top-bar-links a { font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+.top-bar-links a:hover { color: var(--green); }
+
+/* ── Breadcrumb ──────────────────────────────────────────────── */
+.breadcrumb { font-family: var(--mono); font-size: .7rem; letter-spacing: .08em; color: var(--ink-soft); padding: 1rem 0 0; }
+.breadcrumb a { color: var(--ink-soft); }
+.breadcrumb a:hover { color: var(--green); }
+.breadcrumb span { margin: 0 .4em; opacity: .5; }
+
+/* ── Explorer hero ───────────────────────────────────────────── */
+.explorer-hero {
+  padding: 3rem 0 2.5rem;
+  border-bottom: 2px solid var(--ink);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+.explorer-hero-logo img { width: 96px; height: auto; display: block; margin-top: .3rem; }
+.explorer-eyebrow { font-family: var(--mono); font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; color: var(--green-mid); margin-bottom: .5rem; }
+.explorer-title { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem); font-weight: 600; color: var(--green); line-height: 1.05; }
+.explorer-title em { font-style: italic; color: var(--terracotta); }
+.explorer-sub { font-size: .9rem; color: var(--ink-mid); margin-top: .75rem; max-width: 60ch; line-height: 1.65; }
+
+/* ── Search & filter bar ─────────────────────────────────────── */
+.search-bar {
+  margin: 2rem 0 1rem;
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.search-input {
+  flex: 1;
+  min-width: 220px;
+  font-family: var(--sans);
+  font-size: .88rem;
+  padding: .5em 1em;
+  border: 1px solid var(--rule-strong);
+  border-radius: 3px;
+  background: var(--paper);
+  color: var(--ink);
+  outline: none;
+  transition: border-color .15s;
+}
+.search-input:focus { border-color: var(--green); }
+.search-count { font-family: var(--mono); font-size: .68rem; color: var(--ink-soft); white-space: nowrap; }
+
+/* ── Filter pills ────────────────────────────────────────────── */
+.filter-row { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.filter-pill {
+  font-family: var(--mono);
+  font-size: .6rem;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  padding: .22em .75em;
+  border-radius: 2px;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all .12s;
+  user-select: none;
+}
+.filter-pill:hover { background: var(--paper-warm); color: var(--ink); }
+.filter-pill.active { background: var(--green); color: #fff; border-color: var(--green); }
+.filter-pill.clear-pill { border-color: transparent; color: var(--ink-soft); }
+.filter-pill.clear-pill:hover { color: var(--terracotta); }
+
+/* ── Plant grid ──────────────────────────────────────────────── */
+.plant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--rule-strong);
+  margin-bottom: 2rem;
+}
+.plant-card {
+  background: var(--paper);
+  padding: 1.1rem 1.3rem;
+  transition: background .12s;
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+.plant-card:hover { background: var(--paper-warm); }
+.plant-card.hidden { display: none; }
+
+.plant-id {
+  font-family: var(--mono);
+  font-size: .58rem;
+  letter-spacing: .1em;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+}
+.plant-pref {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--green);
+  line-height: 1.15;
+}
+.plant-sci {
+  font-family: var(--sans);
+  font-size: .78rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+.plant-en { font-size: .8rem; color: var(--ink-mid); }
+.plant-card-foot { margin-top: .4rem; display: flex; gap: .4rem; flex-wrap: wrap; align-items: center; }
+
+/* ── Language toggle ─────────────────────────────────────────── */
+.lang-toggle {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--rule-strong);
+  border-radius: 3px;
+  overflow: hidden;
+  width: fit-content;
+}
+.lang-btn {
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .28em .85em;
+  background: var(--paper);
+  color: var(--ink-soft);
+  border: none;
+  border-right: 1px solid var(--rule-strong);
+  cursor: pointer;
+  transition: all .12s;
+  user-select: none;
+}
+.lang-btn:last-child { border-right: none; }
+.lang-btn:hover { background: var(--paper-warm); color: var(--ink); }
+.lang-btn.active { background: var(--green); color: #fff; }
+.lang-btn.disabled { opacity: .35; pointer-events: none; }
+
+/* Language visibility — controlled by data-lang on <body> */
+.name-block { display: none; }
+body[data-lang="en"] .name-block[data-lang="en"],
+body[data-lang="yo"] .name-block[data-lang="yo"],
+body[data-lang="es"] .name-block[data-lang="es"],
+body[data-lang="pt"] .name-block[data-lang="pt"] { display: block; }
+
+/* ── Access badges ───────────────────────────────────────────── */
+.access-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: .58rem;
+  letter-spacing: .06em;
+  padding: .12em .55em;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.access-badge-lg {
+  font-size: .72rem;
+  padding: .2em .7em;
+}
+.access-public    { background: var(--green-light); color: var(--green); }
+.access-community { background: var(--gold-light);  color: var(--gold); }
+.access-initiated { background: #fde8e0;            color: var(--terracotta); }
+.access-none      { background: #2a2a2a;            color: #fff; }
+
+/* ── Plant detail page ───────────────────────────────────────── */
+.plant-header {
+  padding: 2.5rem 0 2rem;
+  border-bottom: 2px solid var(--ink);
+}
+.plant-header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.plant-header-title { flex: 1; }
+.plant-pref-large {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 600;
+  color: var(--green);
+  line-height: 1.05;
+}
+.plant-sci-large {
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--ink-soft);
+  margin-top: .35rem;
+}
+.plant-id-label {
+  font-family: var(--mono);
+  font-size: .65rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-top: .5rem;
+}
+.plant-header-meta { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; margin-top: 1rem; }
+
+/* ── Detail sections ─────────────────────────────────────────── */
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  margin: 2.5rem 0;
+}
+.detail-section { }
+.detail-section-title {
+  font-family: var(--mono);
+  font-size: .65rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding-bottom: .5rem;
+  border-bottom: 1px solid var(--rule-strong);
+  margin-bottom: 1rem;
+}
+.detail-row { margin-bottom: .85rem; }
+.detail-label {
+  font-family: var(--mono);
+  font-size: .63rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: .2rem;
+}
+.detail-value { font-size: .9rem; color: var(--ink-mid); line-height: 1.5; }
+.detail-value-serif { font-family: var(--serif); font-size: 1rem; color: var(--ink); }
+
+/* Name list */
+.name-list { list-style: none; display: flex; flex-direction: column; gap: .15rem; }
+.name-list li { font-size: .88rem; color: var(--ink-mid); }
+.name-list li:first-child { font-size: .96rem; color: var(--ink); font-weight: 400; }
+
+/* Tag cloud for other vernacular names */
+.tag-cloud { display: flex; flex-wrap: wrap; gap: .35rem; }
+.tag-pill {
+  font-family: var(--sans);
+  font-size: .73rem;
+  background: var(--paper-deep);
+  color: var(--ink-mid);
+  padding: .18em .65em;
+  border-radius: 2px;
+  border: 1px solid var(--rule-strong);
+  line-height: 1.4;
+}
+.tag-pill .country-prefix { color: var(--ink-soft); font-size: .68rem; margin-right: .3em; }
+
+/* Gated field */
+.gated-row { display: flex; align-items: center; gap: .6rem; }
+.gated-label-text { font-family: var(--serif); font-size: .95rem; color: var(--ink-mid); }
+
+/* Ritual/medicinal use value */
+.use-value {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: .85rem;
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--paper-warm);
+  border: 1px solid var(--rule-strong);
+  padding: .2em .7em;
+  border-radius: 2px;
+}
+
+/* Collision notice */
+.collision-notice {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .06em;
+  color: var(--gold);
+  background: var(--gold-light);
+  border: 1px solid rgba(160,120,48,.25);
+  padding: .18em .65em;
+  border-radius: 2px;
+}
+
+/* Nav between plants */
+.plant-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--rule);
+  margin-top: 2rem;
+}
+.plant-nav a {
+  font-family: var(--mono);
+  font-size: .68rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border: 1px solid var(--rule-strong);
+  padding: .3em .9em;
+  border-radius: 2px;
+  transition: all .12s;
+}
+.plant-nav a:hover { background: var(--paper-warm); color: var(--ink); }
+
+/* ── Footer ──────────────────────────────────────────────────── */
+.site-footer { border-top: 1px solid var(--rule); padding: 1.5rem 0 2.5rem; display: flex; gap: 2rem; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-top: 2rem; }
+.footer-left { font-family: var(--mono); font-size: .68rem; letter-spacing: .04em; color: var(--ink-soft); line-height: 1.7; }
+.footer-links { display: flex; gap: 1.5rem; }
+.footer-links a { font-family: var(--mono); font-size: .68rem; letter-spacing: .05em; color: var(--ink-soft); }
+.footer-links a:hover { color: var(--green); }
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 760px) {
+  .explorer-hero { grid-template-columns: 1fr; gap: 1rem; }
+  .explorer-hero-logo img { width: 56px; }
+  .detail-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .plant-grid { grid-template-columns: 1fr; }
+}
+
+</style>
+</head>
+<body data-lang="en">
+
+<div class="top-bar">
+  <span class="top-bar-id">Iroko Historical Society · Ewé Database</span>
+  <nav class="top-bar-links">
+    <a href="../index.html">All Plants</a>
+    <a href="https://ontology.irokosociety.org">Framework ↗</a>
+    <a href="https://www.irokosociety.org">irokosociety.org ↗</a>
+  </nav>
+</div>
+
+<div class="page-wrap">
+
+  <p class="breadcrumb">
+    <a href="../index.html">Ewé Database</a>
+    <span>/</span>
+    Plant0016
+  </p>
+
+  <header class="plant-header">
+    <div class="plant-header-top">
+      <div class="plant-header-title">
+        <div class="plant-pref-large">PRODIGIOSA</div>
+        <div class="plant-sci-large">Bryophyllum pinnatum</div>
+        <div class="plant-id-label">Plant0016 · iroko:EwePlantRecord</div>
+      </div>
+      <div class="lang-toggle">
+  <button class="lang-btn" data-lang="en">EN</button>
+  <button class="lang-btn" data-lang="yo">YO</button>
+  <button class="lang-btn" data-lang="es">ES</button>
+  <button class="lang-btn disabled" data-lang="pt" title="Brazilian Portuguese names coming soon">PT</button>
+</div>
+    </div>
+    <div class="plant-header-meta">
+      <span class="access-badge access-public access-badge-lg">Public</span>
+      
+    </div>
+  </header>
+
+  <div class="detail-grid">
+
+    <div class="detail-section">
+      <div class="detail-section-title">Names by Language</div>
+      <div class="detail-row">
+  <div class="detail-label">English</div>
+  <div class="name-block" data-lang="en">
+    <ul class="name-list"><li>LIFE EVERLASTING</li></ul>
+  </div>
+</div>
+      <div class="detail-row">
+  <div class="detail-label">Yoruba</div>
+  <div class="name-block" data-lang="yo">
+    <ul class="name-list"><li>Ẹ̀rù òdúndún</li>
+<li>Kántíkántì</li>
+<li>Abàmọdá</li>
+<li>Òwò</li>
+<li>Ewé òwò</li>
+<li>Kòròpọn</li></ul>
+  </div>
+</div>
+      <div class="detail-row">
+  <div class="detail-label">Spanish / Cuban</div>
+  <div class="name-block" data-lang="es">
+    <ul class="name-list"><li>hoja</li>
+<li>Siempreviva</li>
+<li>Víbora</li>
+<li>Inmortal</li></ul>
+  </div>
+</div>
+      <div class="detail-row">
+  <div class="detail-label">Brazilian Portuguese</div>
+  <div class="name-block" data-lang="pt">
+    <div style="font-family:var(--mono);font-size:.7rem;color:var(--ink-soft);font-style:italic;">
+      Portuguese names from the forthcoming Brazilian manuscript. Not yet in dataset.
+    </div>
+  </div>
+</div>
+      <div class="detail-row">
+  <div class="detail-label">Lucumí Names</div>
+  <div class="detail-value"><span class="access-badge access-community access-badge-lg">Community Only</span></div>
+</div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-title">Regional & Vernacular Names</div>
+      <div class="detail-row">
+  <div class="detail-label">Other Regional Names</div>
+  <div class="tag-cloud"><span class="tag-pill"><span class="country-prefix">Arará ·</span>Afami bruja. Sanglaou</span>
+<span class="tag-pill">Zèb maltèt</span>
+<span class="tag-pill">Lougarou</span>
+<span class="tag-pill">Bruja</span>
+<span class="tag-pill">Amor tras la puerta</span>
+<span class="tag-pill">Colombina</span>
+<span class="tag-pill">Sanglou</span>
+<span class="tag-pill">Fèy Lougarou</span></div>
+</div>
+    </div>
+
+  </div>
+
+  <div class="detail-grid">
+
+    <div class="detail-section">
+      <div class="detail-section-title">Sacred Knowledge</div>
+      <div class="detail-row">
+  <div class="detail-label">Ritual Use</div>
+  <div class="detail-value"><span class="use-value">Protection &amp; Boundary</span></div>
+</div>
+      <div class="detail-row">
+  <div class="detail-label">Ritual Notes</div>
+  <div class="detail-value"></div>
+</div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-title">Classification</div>
+      <div class="detail-row">
+  <div class="detail-label">Medicinal Use</div>
+  <div class="detail-value"><span class="use-value">General Tonic</span></div>
+</div>
+      <div class="detail-row">
+        <div class="detail-label">Scientific Name</div>
+        <div class="detail-value" style="font-style:italic;">Bryophyllum pinnatum</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Iroko URI</div>
+        <div class="detail-value">
+          <a href="https://ontology.irokosociety.org/data/ewe/Plant0016" style="font-family:var(--mono);font-size:.72rem;word-break:break-all;">
+            https://ontology.irokosociety.org/data/ewe/Plant0016
+          </a>
+        </div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Vocabulary</div>
+        <div class="detail-value">
+          <a href="https://ontology.irokosociety.org/vocab/iroko-ewe.html"
+             style="font-family:var(--mono);font-size:.72rem;">iroko-ewe ↗</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="plant-nav">
+    <a href="Plant0015.html">← Plant0015</a>
+    <a href="../index.html">All Plants</a>
+    <a href="Plant0017.html">Plant0017 →</a>
+  </div>
+
+<footer class="site-footer">
+  <div class="footer-left">
+    Iroko Historical Society · Ewé Database<br>
+    Postcustodial Digital Archives for Afro-Atlantic Cultural Materials<br>
+    Source: Pierre Fatumbi Verger, <em>Ewé: The Use of Plants in Yoruba Society</em> (1995) ·
+    Dalia Quiros-Moran, <em>Guide to Afro-Cuban Herbalism</em><br>
+    Vocabulary: <a href="https://ontology.irokosociety.org">Iroko Framework v2.0.0</a> · License: CC0 1.0
+  </div>
+  <div class="footer-links">
+    <a href="https://www.irokosociety.org">irokosociety.org</a>
+    <a href="https://ontology.irokosociety.org">Vocabulary</a>
+    <a href="../index.html">All Plants</a>
+  </div>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var stored = localStorage.getItem('ewe-lang') || 'en';
+  document.body.setAttribute('data-lang', stored);
+  document.querySelectorAll('.lang-btn').forEach(function(btn){
+    if(btn.dataset.lang === stored) btn.classList.add('active');
+    btn.addEventListener('click', function(){
+      var lang = this.dataset.lang;
+      if(this.classList.contains('disabled')) return;
+      document.body.setAttribute('data-lang', lang);
+      localStorage.setItem('ewe-lang', lang);
+      document.querySelectorAll('.lang-btn').forEach(function(b){ b.classList.remove('active'); });
+      this.classList.add('active');
+    }.bind(btn));
+  });
+})();
+</script>
+</body>
+</html>
