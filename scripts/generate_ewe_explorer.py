@@ -799,7 +799,7 @@ def build_plant(p, prev_id, next_id, out_dir):
       <div class="detail-row">
         <div class="detail-label ui" {ui_attrs('iroko_uri')}>Iroko URI</div>
         <div style="margin-top:.3rem;">
-          <a href="{H(p['uri'])}" style="font-family:var(--mono);font-size:.72rem;word-break:break-all;">{H(p['uri'])}</a>
+          <a href="{H(p['uri'])}" style="font-family:var(--mono);font-size:.72rem;word-break:break-all;color:var(--green-mid);">{H(p['uri'])}</a>
         </div>
       </div>
       <div class="detail-row">
