@@ -458,7 +458,7 @@ def footer_html(depth=""):
     <span class="ui" {ui_attrs('footer_desc')}>Postcustodial Digital Archives for Afro-Atlantic Cultural Materials</span><br>
     Source: Pierre Fatumbi Verger, <em>Ewé: The Use of Plants in Yoruba Society</em> (1995) ·
     Dalia Quiros-Moran, <em>Guide to Afro-Cuban Herbalism</em><br>
-    Vocabulary: <a href="https://ontology.irokosociety.org">Iroko Framework v2.0.0</a> · License: CC0 1.0
+    Vocabulary: <a href="https://ontology.irokosociety.org">Iroko Framework v1.2.0</a> · License: CC0 1.0
   </div>
   <div class="footer-links">
     <a href="https://www.irokosociety.org">irokosociety.org</a>
