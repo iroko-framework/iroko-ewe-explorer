@@ -164,7 +164,7 @@ def _is_scientific(name):
 def extract_plants(g):
     plants = []
     for subj in g.subjects(RDF.type, IROKO.EwePlantRecord):
-        p = {"uri": str(subj), "id": None, "scientific": None,
+        p = {"uri": None, "id": None, "scientific": None,
              "prefLabel": None,
              "en": [], "yo": [], "es": [], "pt": [],
              "lucumi": [], "synonyms": [], "other": [],
@@ -176,6 +176,10 @@ def extract_plants(g):
             if isinstance(o, URIRef): continue
             s = str(o)
             if s.startswith("Plant"): p["id"] = s
+
+        # Canonical live URI — constructed from plant ID, matches CNAME deployment
+        if p["id"]:
+            p["uri"] = f"https://ewe-database.irokosociety.org/plant/{p['id']}.html"
 
         p["scientific"] = str(g.value(subj, DWC.scientificName) or "")
         pref = g.value(subj, SKOS.prefLabel)
@@ -829,7 +833,7 @@ def build_plant(p, prev_id, next_id, out_dir):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--ttl",  default="Verger_Ewe_Dataset.ttl")
-    parser.add_argument("--out",  default="ewe-explorer-v2")
+    parser.add_argument("--out",  default=".")
     parser.add_argument("--logo", default=None)
     args = parser.parse_args()
 
